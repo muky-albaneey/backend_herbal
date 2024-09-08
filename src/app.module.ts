@@ -11,6 +11,7 @@ import { ProfileImage } from './user/entities/profile.entity';
 import { Settings } from './user/entities/setting.entity';
 import { ResponseEntity } from './user/entities/response.entity';
 import { PromptEntity } from './user/entities/reponse_prompt.entity';
+import { PaystackModule } from './paystack/paystack.module';
 
 
 @Module({
@@ -23,8 +24,8 @@ import { PromptEntity } from './user/entities/reponse_prompt.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        // host:  configService.get<string>('DATABASE_DEV_HOST'),
-        host: configService.get<string>('DATABASE_HOST'),
+        host:  configService.get<string>('DATABASE_DEV_HOST'),
+        // host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('DATABASE_PORT'),
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
@@ -34,7 +35,9 @@ import { PromptEntity } from './user/entities/reponse_prompt.entity';
         migrations: ['src/migrations/*.ts'],
       }),
     }),
-    UserModule
+    UserModule,
+    PaystackModule 
+
   ],
   controllers: [AppController],
   providers: [AppService, MailService],

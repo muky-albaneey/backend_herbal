@@ -7,16 +7,31 @@ import * as crypto from 'crypto';
 export class PaystackController {
   constructor(private readonly paystackService: PaystackService) {}
 
-  // Initialize payment
-  @Post('initialize')
-  async initializePayment(@Body('email') email: string, @Body('amount') amount: number) {
-    try {
-      const response = await this.paystackService.initializePayment(email, amount);
-      return { status: 'success', data: response };
-    } catch (error) {
-      return { status: 'error', message: error.message };
-    }
+  // // Initialize payment
+  // @Post('initialize')
+  // async initializePayment(@Body('email') email: string, @Body('amount') amount: number) {
+  //   try {
+  //     const response = await this.paystackService.initializePayment(email, amount);
+  //     return { status: 'success', data: response };
+  //   } catch (error) {
+  //     return { status: 'error', message: error.message };
+  //   }
+  // }
+// Modify the initializePayment function to accept currency
+@Post('initialize')
+async initializePayment(
+  @Body('email') email: string,
+  @Body('amount') amount: number,
+  @Body('currency') currency: string, // Add currency to the body
+) {
+  try {
+    // Call service with the currency included
+    const response = await this.paystackService.initializePayment(email, amount, currency);
+    return { status: 'success', data: response };
+  } catch (error) {
+    return { status: 'error', message: error.message };
   }
+}
 
   // Webhook handler
   @Post('webhook')
