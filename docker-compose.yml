@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  nestjs_api_dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      PORT: 3000
+      NODE_ENV: development
+    volumes:
+      - ./src:/usr/src/app/src
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: iOoWAcFOvQUPnqooXU9II2kvNLgd7KQ0
+      POSTGRES_USER: muky_albany
+      POSTGRES_DB: grambutler
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
+# services:
+#   nestjs_api_dev:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     ports:
+#       - '3000:3000'
+#     environment:
+#       PORT: 3000
+#       NODE_ENV: development
+#     volumes:
+#       - ./src:/usr/src/app/src
+#     command: ["sh", "-c", "npx typeorm migration:run -d src/data-source.ts && npm run start:dev"]
+
+
+#   db:
+#     image: postgres
+#     restart: always
+#     ports:
+#       - '5432:5432'
+#     environment:
+#       POSTGRES_PASSWORD: iOoWAcFOvQUPnqooXU9II2kvNLgd7KQ0
+#       POSTGRES_USER: muky_albany
+#       POSTGRES_DB: grambutler
+
+#   adminer:
+#     image: adminer
+#     restart: always
+#     ports:
+#       - '8080:8080'
