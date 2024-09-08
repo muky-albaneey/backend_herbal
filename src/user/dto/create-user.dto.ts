@@ -2,18 +2,25 @@
 
 // import { IsNotEmpty, IsString, IsEmail, MinLength, MaxLength, IsOptional  } from 'class-validator';
 
-import { IsOptional, IsString, IsNotEmpty, IsEmail, MinLength, MaxLength, IsArray } from 'class-validator';
+import { IsOptional, IsString, IsNotEmpty, IsEmail, MinLength, MaxLength, IsArray, IsPhoneNumber } from 'class-validator';
 
 export class CreateAuthDto {
     
     @IsOptional()
     @IsString()    
-    full_name: string;
+    full_name?: string;
 
     @IsNotEmpty({ message: "The email field is empty" })
     @IsEmail()
     @IsString()    
     email: string;
+
+
+    @IsNotEmpty({ message: "The phone number field is empty" })
+    @IsPhoneNumber()
+    @IsString()    
+    phone_num: string;
+   
    
     @IsNotEmpty({ message: "The password field is empty" })
     @MinLength(6, { message: "The password should exceed 5 characters" })
@@ -27,11 +34,7 @@ export class CreateAuthDto {
 
     @IsOptional()
     @IsString()     
-    country?: string;
-   
-    @IsOptional()
-    @IsString()  
-    state?: string;
+    location?: string;
 
  
 }

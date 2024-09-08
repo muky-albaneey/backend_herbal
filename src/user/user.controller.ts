@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, UseInterceptors,UploadedFile, Res, ParseUUIDPipe, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateAuthDto, ForgotPass,  } from './dto/create-user.dto';
-import { OnboardingDto, SettingDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 // import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -197,12 +195,6 @@ async reset(@Body() body: { token: string }) {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
       return await this.userService.findOne(id);
     }
-
-  @Patch(':id/onboard')
-  async onoardingScreen(@Param('id', ParseUUIDPipe) id: string, @Body() body : OnboardingDto){
-    return await this.userService.updateOnboarding(id, body)
-  }
-
   @Patch(':id/profileImg')
   @UseInterceptors(FileInterceptor ('profile'))
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -214,10 +206,6 @@ async reset(@Body() body: { token: string }) {
     return result;
   }
 
-  @Patch(':id/settings')
-  async userSetting(@Param('id', ParseUUIDPipe) id: string, @Body() body : SettingDto){
-    return await this.userService.updateSetting(id, body)
-  }
 
 
 }

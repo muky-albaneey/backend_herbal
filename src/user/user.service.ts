@@ -6,29 +6,20 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from 'src/mail/mail.service';
-import { OnboardingDto, SettingDto } from './dto/update-user.dto';
-import { Onboarding } from './entities/onoard.entity';
 import * as path from 'path';
 import { ProfileImage } from './entities/profile.entity';
-import { Settings } from './entities/setting.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
-    @InjectRepository(Onboarding)
-    private readonly onboardingRepository: Repository<Onboarding>,
-    
     // @InjectRepository(MailService)
     private readonly emailservice: MailService,
 
     @InjectRepository(ProfileImage)
     private readonly ProfileBgRepository: Repository<ProfileImage>,
 
-    @InjectRepository(Settings)
-    private readonly SettingsRepository: Repository<Settings>
     
   ) {}
 
@@ -143,106 +134,6 @@ export class UserService {
   }
 
 
-  async updateOnboarding(id, body: OnboardingDto) {
-    // Find the user with the given id and their associated onboarding information
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: {onboard_info: true, profile_image: true, settings: true, caption_responses: true, prompt_responses:true}  
-    });
-  
-    console.log("User found: ", user);
-  
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-  
-    if (user.onboard_info) {
-      // Update existing onboarding entity
-      user.onboard_info.marketing_objectives = body.marketing_objectives;
-      user.onboard_info.target_audience = body.target_audience;
-      user.onboard_info.campaigns = body.campaigns;
-      user.onboard_info.social_media_business = body.social_media_business;
-      user.onboard_info.info_caption = body.info_caption;
-      user.onboard_info.marketing_challenges = body.marketing_challenges;
-      user.onboard_info.marketing_or_sales = body.marketing_or_sales;
-      user.onboard_info.dashoard_roles = body.dashoard_roles;
-      user.onboard_info.members_dashoard = body.members_dashoard;
-      user.onboard_info.current_workflow = body.current_workflow;
-      user.onboard_info.type_of_support = body.type_of_support;
-      user.onboard_info.recommend_dashboard = body.recommend_dashboard;
-      user.onboard_info.immediate_questions = body.immediate_questions;
-      user.onboard_info.personalized_training = body.personalized_training;
-      user.onboard_info.about_new_features = body.about_new_features;
-      user.onboard_info.contact_information = body.contact_information;
-  
-      console.log("Updating existing onboarding info: ", user.onboard_info);
-      await this.onboardingRepository.save(user.onboard_info);
-    } else {
-      // Create new onboarding entity
-      const newonboarding = this.onboardingRepository.create(body);
-  
-      console.log("Creating new onboarding info: ", newonboarding);
-      user.onboard_info = await this.onboardingRepository.save(newonboarding);
-    }
-  
-    // Save the updated user entity with new or updated onboarding info
-    
-    console.log("User updated successfully: ", user);
-    return await this.userRepository.save(user);
-  }
-
-  async updateSetting(id, body: SettingDto) {
-    // Find the user with the given id and their associated onboarding information
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: {onboard_info: true, profile_image: true, settings: true, caption_responses: true, prompt_responses:true}  
-     });
-  
-    console.log("User found: ", user);
-  
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-  
-    if (user.settings) {
-      console.log(user.settings.firstname );
-      
-      // Update existing onboarding entity
-      if(body.firstname !== "") user.settings.firstname = body?.firstname 
-      else user.settings.firstname = user.settings.firstname;
-
-      if(body.lastname !== "") user.settings.lastname = body?.lastname
-      else user.settings.lastname = user.settings.lastname;
-
-      if(body.email !== "") user.settings.email = body?.email;
-      else user.settings.email = user.settings.email;
-
-      if(body.username !== "") user.settings.username = body?.username;
-      else user.settings.username  = user.settings.username;
-
-      if(body.location !== "") user.settings.location = body?.location;
-      else user.settings.location = user.settings.location;
-
-      // user.settings.lastname = body?.lastname;
-      // user.settings.email = body?.email;
-      // user.settings.username = body?.username;
-      // user.settings.location = body?.location;
-      
-      console.log("Updating existing profile info: ", user.settings);
-      await this.SettingsRepository.save(user.settings);
-    } else {
-      // Create new onboarding entity
-      const newsettings = this.SettingsRepository.create(body);
-  
-      console.log("Creating new onboarding info: ", newsettings);
-      user.settings = await this.SettingsRepository.save(newsettings);
-    }
-  
-    // Save the updated user entity with new or updated onboarding info
-    
-    console.log("User updated successfully: ", user);
-    return await this.userRepository.save(user);
-  }
   async findOne(id){
     // const user = await this.userRepository.findOne({
     //   where: { id },
@@ -251,7 +142,7 @@ export class UserService {
     // });
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: {onboard_info: true, profile_image: true, settings: true, caption_responses: true, prompt_responses:true}      // relations: {profile_bg: true, profile_image : true},
+      relations: { profile_image: true}      // relations: {profile_bg: true, profile_image : true},
     });
     
     console.log("User found: ", user);
@@ -265,8 +156,7 @@ export class UserService {
   
   async findAll() {
     const user = await this.userRepository.find({      
-      relations: {onboard_info: true, profile_image: true, settings: true, caption_responses: true, prompt_responses:true}  
-    });
+      relations: { profile_image: true}     });
     return user
   }
 
@@ -275,8 +165,7 @@ export class UserService {
     // Check if the user exists    
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: {onboard_info: true, profile_image: true, settings: true, caption_responses: true, prompt_responses:true}  
-      // relations: {profile_bg: true, profile_image : true},
+      relations: { profile_image: true}       // relations: {profile_bg: true, profile_image : true},
     });
     
     
