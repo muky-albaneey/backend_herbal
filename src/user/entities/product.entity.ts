@@ -1,4 +1,5 @@
-import { OneToOne, JoinColumn, OneToMany, ManyToOne, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { OneToOne, JoinColumn, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { ProductImage } from './product_img.entity';
 
 
 @Entity()
@@ -20,6 +21,10 @@ export class Product{
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
+
+    @OneToOne(() => ProductImage, { cascade: true , nullable: true})
+    @JoinColumn()
+    profile_image?: ProductImage;
 
     constructor(product :Partial<Product>){
         Object.assign(this, product)

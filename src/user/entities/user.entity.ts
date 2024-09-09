@@ -14,6 +14,7 @@ import { ProfileImage } from './profile.entity';
 import { Settings } from './setting.entity';
 import { ResponseEntity } from './response.entity';
 import { PromptEntity } from './reponse_prompt.entity';
+import { Product } from './product.entity';
 
 
 
@@ -58,6 +59,9 @@ export class User {
     @JoinColumn()
     profile_image?: ProfileImage;
 
+    @OneToOne(() => Product, { cascade: true , nullable: true})
+    @JoinColumn()
+    product?: Product;
 
     constructor(user :Partial<User>){
         Object.assign(this, user)
