@@ -1,3 +1,26 @@
+// import { IsNotEmpty, IsString } from 'class-validator';
+
+// export class CreateProductDto {
+//   @IsNotEmpty()
+//   @IsString()
+//   name: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   price: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   quantity: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   category: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   description: string;
+// }
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateProductDto {
@@ -21,11 +44,8 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
+  // Add userId to link product to a user
   @IsNotEmpty()
-  @IsString()
-  imageBase64: string; // Base64 image string
-
-  @IsNotEmpty()
-  @IsString()
-  imageName: string; // Image filename (e.g., product_image.jpg)
+  @IsString() // or @IsUUID() if you're using UUIDs
+  userId: string; // Assuming userId is a string/UUID
 }

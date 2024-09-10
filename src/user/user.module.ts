@@ -7,15 +7,12 @@ import { User } from './entities/user.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
-import { Onboarding } from './entities/onoard.entity';
 import { ProfileImage } from './entities/profile.entity';
-import { Settings } from './entities/setting.entity';
-import { ResponseEntity } from './entities/response.entity';
-import { PromptEntity } from './entities/reponse_prompt.entity';
+
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Onboarding, ProfileImage, Settings, ResponseEntity, PromptEntity]),
+    TypeOrmModule.forFeature([User, ProfileImage]),
     ConfigModule, // Ensure ConfigModule is imported
     JwtModule.registerAsync({
       imports: [ConfigModule],
