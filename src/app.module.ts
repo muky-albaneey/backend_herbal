@@ -12,6 +12,7 @@ import { Settings } from './user/entities/setting.entity';
 import { ResponseEntity } from './user/entities/response.entity';
 import { PromptEntity } from './user/entities/reponse_prompt.entity';
 import { PaystackModule } from './paystack/paystack.module';
+import { ProductsModule } from './products/products.module';
 
 
 @Module({
@@ -36,7 +37,8 @@ import { PaystackModule } from './paystack/paystack.module';
       }),
     }),
     UserModule,
-    PaystackModule 
+    PaystackModule,
+    ProductsModule 
 
   ],
   controllers: [AppController],

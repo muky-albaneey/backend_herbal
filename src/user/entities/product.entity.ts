@@ -17,14 +17,17 @@ export class Product{
     quantity: string;
 
     @Column({ type: 'varchar', length: 190, nullable: false  })
-    type : string;
+    category : string;
+
+    @Column({ type: 'varchar', length: 190, nullable: false  })
+    description : string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
     @OneToOne(() => ProductImage, { cascade: true , nullable: true})
     @JoinColumn()
-    profile_image?: ProductImage;
+    product_image?: ProductImage;
 
     constructor(product :Partial<Product>){
         Object.assign(this, product)

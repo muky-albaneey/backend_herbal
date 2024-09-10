@@ -195,6 +195,7 @@ async reset(@Body() body: { token: string }) {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
       return await this.userService.findOne(id);
     }
+    
   @Patch(':id/profileImg')
   @UseInterceptors(FileInterceptor ('profile'))
   @UsePipes(new ValidationPipe({ transform: true }))
