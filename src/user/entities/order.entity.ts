@@ -1,6 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
-import { OrderItem } from './order-item.entity';
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 @Entity()
 export class Order {
@@ -11,11 +17,11 @@ export class Order {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
-  items: OrderItem[]; // Each order contains multiple items
+  @Column({ type: 'json', nullable: false })
+  items: CartItem[]; // Store the cart items as JSON
 
   @Column({ type: 'decimal', nullable: false })
-  totalAmount: number; // Total order amount (sum of item totals + delivery fee)
+  totalAmount: number; // Total order amount
 
   @Column({ type: 'decimal', nullable: false })
   deliveryFee: number; // Delivery fee

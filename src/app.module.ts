@@ -31,7 +31,7 @@ import { OrderModule } from './order/order.module';
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
         entities: [User,  ProductImage, Product, ProfileImage],
-        synchronize: false,
+        synchronize: false, 
         migrations: ['src/migrations/*.ts'],
       }),
     }),

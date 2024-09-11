@@ -1,19 +1,13 @@
-import { IsArray, IsDecimal, IsNotEmpty } from 'class-validator';
-
-export class CreateOrderDto {
-  @IsArray()
-  @IsNotEmpty()
-  products: {
-    productName: string;
+interface CartItem {
+    id: string;
+    name: string;
     price: number;
     quantity: number;
-  }[];
-
-  @IsDecimal()
-  @IsNotEmpty()
-  deliveryFee: number;
-
-  @IsDecimal()
-  @IsNotEmpty()
-  totalAmount: number; // Total price, including delivery fee
-}
+  }
+  
+  export class CreateOrderDto {
+    userId: number;
+    items: CartItem[]; // Cart items passed from the frontend
+    deliveryFee: number; // Delivery fee
+  }
+  
