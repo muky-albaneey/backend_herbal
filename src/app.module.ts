@@ -12,6 +12,7 @@ import { ProductsModule } from './products/products.module';
 import { ProductImage } from './user/entities/product_img.entity';
 import { Product } from './user/entities/product.entity';
 import { OrderModule } from './order/order.module';
+import { Order } from './user/entities/order.entity';
 
 
 @Module({
@@ -30,7 +31,7 @@ import { OrderModule } from './order/order.module';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User,  ProductImage, Product, ProfileImage],
+        entities: [User,  ProductImage, Product, ProfileImage, Order],
         synchronize: false, 
         migrations: ['src/migrations/*.ts'],
       }),
