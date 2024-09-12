@@ -12,6 +12,49 @@ import { User } from 'src/user/entities/user.entity';
 
 
 
+// import { Injectable } from '@nestjs/common';
+// import { InjectRepository } from '@nestjs/typeorm';
+// import { Repository } from 'typeorm';
+// import { Product } from './product.entity';
+// import { CreateProductDto } from './create-product.dto';
+// import { User } from '../users/user.entity';
+// import { ProductImage } from './product-image.entity';
+
+@Injectable()
+export class ProductService {
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+    @InjectRepository(ProductImage) private productImageRepository: Repository<ProductImage>,
+  ) {}
+
+  async createProductWithImage(
+    createProductDto: CreateProductDto,
+    file: Express.Multer.File,
+    user: User,
+  ) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const base64Image = file.buffer.toString('base64');
+
+    const productImage = this.productImageRepository.create({
+      name: file.originalname,
+      base64: base64Image,
+      ext: ext.slice(1),
+      content: file.buffer,
+    });
+
+    const savedProductImage = await this.productImageRepository.save(productImage);
+
+    // Create the product with reference to the user
+    const newProduct = this.productRepository.create({
+      ...createProductDto,
+      product_image: savedProductImage,
+      user,  // Associate product with user
+    });
+
+    return await this.productRepository.save(newProduct);
+  }
+}
+
 // @Injectable()
 // export class ProductService {
 //   constructor(
@@ -53,43 +96,43 @@ import { User } from 'src/user/entities/user.entity';
 //     return await this.productRepository.save(newProduct);
 //   }
 // }
-@Injectable()
-export class ProductService {
-  constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
-    @InjectRepository(ProductImage)
-    private readonly productImageRepository: Repository<ProductImage>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,  // Inject UserRepository
-  ) {}
+// @Injectable()
+// export class ProductService {
+//   constructor(
+//     @InjectRepository(Product)
+//     private readonly productRepository: Repository<Product>,
+//     @InjectRepository(ProductImage)
+//     private readonly productImageRepository: Repository<ProductImage>,
+//     @InjectRepository(User)
+//     private readonly userRepository: Repository<User>,  // Inject UserRepository
+//   ) {}
 
-  async createProductWithImage(
-    createProductDto: CreateProductDto,
-    file: Express.Multer.File,
-    user: User,  // User entity passed from the controller
-  ) {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const base64Image = file.buffer.toString('base64');
+//   async createProductWithImage(
+//     createProductDto: CreateProductDto,
+//     file: Express.Multer.File,
+//     user: User,  // User entity passed from the controller
+//   ) {
+//     const ext = path.extname(file.originalname).toLowerCase();
+//     const base64Image = file.buffer.toString('base64');
   
-    const productImage = this.productImageRepository.create({
-      name: file.originalname,
-      base64: base64Image,
-      ext: ext.slice(1),
-      content: file.buffer,
-    });
+//     const productImage = this.productImageRepository.create({
+//       name: file.originalname,
+//       base64: base64Image,
+//       ext: ext.slice(1),
+//       content: file.buffer,
+//     });
   
-    const savedProductImage = await this.productImageRepository.save(productImage);
+//     const savedProductImage = await this.productImageRepository.save(productImage);
   
-    // Create the product with the reference to the user
-    const newProduct = this.productRepository.create({
-      ...createProductDto,
-      product_image: savedProductImage,
-      user,  // Associate the product with the user
-    });
+//     // Create the product with the reference to the user
+//     const newProduct = this.productRepository.create({
+//       ...createProductDto,
+//       product_image: savedProductImage,
+//       user,  // Associate the product with the user
+//     });
   
-    return await this.productRepository.save(newProduct);
-  }
+//     return await this.productRepository.save(newProduct);
+//   }
   
   // async createProductWithImage(createProductDto: CreateProductDto, file: Express.Multer.File) {
   //   const { userId, name, price, quantity, category, description } = createProductDto;
