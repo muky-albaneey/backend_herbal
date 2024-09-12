@@ -43,7 +43,6 @@ import { CreateProductDto } from 'src/user/dto/create-product.dto';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
@@ -63,8 +62,15 @@ export class ProductController {
     if (!file) {
       throw new BadRequestException('Image file is required');
     }
-
-    // Call the service to create the product with the associated image and user
-    return await this.productService.createProductWithImage(createProductDto, file);
+  
+    // Use the userId from the form (createProductDto) to find the user
+    const user = await this.userService.findById(createProductDto.userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+  
+    // Pass both the product data and the user to the service
+    return await this.productService.createProductWithImage(createProductDto, file, user);
   }
+  
 }
