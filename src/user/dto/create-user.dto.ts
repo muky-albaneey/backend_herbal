@@ -19,10 +19,10 @@ export class CreateAuthDto {
     @IsNotEmpty({ message: "The phone number field is empty" })
     @IsPhoneNumber()
     @IsString()    
-    phone_num: string;
+    phone_num?: string;
    
    
-    @IsNotEmpty({ message: "The password field is empty" })
+    @IsOptional({ message: "The password field is empty" })
     @MinLength(6, { message: "The password should exceed 5 characters" })
     @MaxLength(14, { message: "The password should not exceed 14 characters" })     
     @IsString()  

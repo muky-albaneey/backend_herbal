@@ -97,8 +97,8 @@ export class User {
     @Column({ type: 'varchar', length: 140, unique: true, nullable: false })
     email: string;
 
-    @Column({ type: 'varchar', length: 140, unique: true, nullable: false })
-    phone_num: string;
+    @Column({ type: 'varchar', length: 140, unique: true, nullable: true })
+    phone_num?: string;
 
     @Column({ type: 'varchar', nullable: false })
     password: string;

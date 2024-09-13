@@ -25,8 +25,8 @@ import { Order } from './user/entities/order.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        // host:  configService.get<string>('DATABASE_DEV_HOST'),
-        host: configService.get<string>('DATABASE_HOST'),
+        host:  configService.get<string>('DATABASE_DEV_HOST'),
+        // host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('DATABASE_PORT'),
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
