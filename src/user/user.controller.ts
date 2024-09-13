@@ -51,7 +51,7 @@ export class UserController {
         sameSite: 'none',
       });
 
-      // Set HttpOnly cookie for the refresh token (if needed)
+      // Set HttpOnly cookie fo2r the refresh token (if needed)
       response.cookie('refreshToken', jwtRefreshTokenKeys, {
         httpOnly: true,
         secure: true,
