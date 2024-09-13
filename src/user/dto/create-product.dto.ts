@@ -45,7 +45,7 @@ export class CreateProductDto {
   description: string;
 
   // Add userId to link product to a user
-  @IsNotEmpty()
-  @IsString() // or @IsUUID() if you're using UUIDs
-  userId: number; // Assuming userId is a string/UUID
+  // @IsNotEmpty()
+  // @IsString() // or @IsUUID() if you're using UUIDs
+  // userId: number; // Assuming userId is a string/UUID
 }
