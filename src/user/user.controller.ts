@@ -13,9 +13,11 @@ export class UserController {
 
   @Post('create')
   async create(@Body() createAuthDto: CreateAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
+    if(createAuthDto.password == createAuthDto.confirmPassword)  {
     try {      
-      
+     
       const result = await this.userService.create(createAuthDto);
+     
       const  email =  result.user.email
       const  id =  result.user.id
       const  role =  result.user.role
@@ -75,6 +77,9 @@ export class UserController {
     } catch (error) {
       console.error('User creation failed', error);
       throw error;
+    }
+    }else{
+      return null
     }
   }
 

@@ -40,7 +40,9 @@ export class UserService {
       // Hash the password before saving
       createAuthDto.password = await this.hashPassword(createAuthDto.password);
 
-      const newUser = await this.userRepository.create(createAuthDto);
+      const { confirmPassword, ...userData } = createAuthDto;
+
+      const newUser = await this.userRepository.create(userData);
       const userSaved = await this.userRepository.save(newUser);
 
       return { user: userSaved };
