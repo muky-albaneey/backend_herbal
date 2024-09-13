@@ -16,13 +16,13 @@ export class CreateAuthDto {
     email: string;
 
 
-    @IsNotEmpty({ message: "The phone number field is empty" })
+    @IsOptional()
     @IsPhoneNumber()
     @IsString()    
     phone_num?: string;
    
    
-    @IsOptional({ message: "The password field is empty" })
+    @IsNotEmpty({ message: "The password field is empty" })
     @MinLength(6, { message: "The password should exceed 5 characters" })
     @MaxLength(14, { message: "The password should not exceed 14 characters" })     
     @IsString()  
