@@ -48,7 +48,7 @@ export class UserController {
         secure: true,
         maxAge:  7 * 24 * 60 * 60 * 1000,  // 7 hours in milliseconds
         path: '/',
-        sameSite: 'lax',
+        sameSite: 'none',
       });
 
       // Set HttpOnly cookie fo2r the refresh token (if needed)
@@ -57,7 +57,7 @@ export class UserController {
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         path: '/', 
-        sameSite: 'lax',
+        sameSite: 'none',
       });
 
       // Set HttpOnly cookie for the role token (if needed)
@@ -66,7 +66,7 @@ export class UserController {
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         path: '/', 
-        sameSite: 'lax',
+        sameSite: 'none',
       });
         return response.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
@@ -121,7 +121,7 @@ export class UserController {
       secure: true,
       maxAge: 7 * 12 * 60 * 60 * 1000,  // 7 hours in milliseconds
       // path: '/',
-      sameSite: 'lax',
+      sameSite: 'none',
     });
 
     // Set HttpOnly cookie for the refresh token (if needed)
@@ -130,7 +130,7 @@ export class UserController {
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       // path: '/', 
-      sameSite: 'lax',
+      sameSite: 'none',
     });
 
     // Set HttpOnly cookie for the role token (if needed)
@@ -139,7 +139,7 @@ export class UserController {
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       // path: '/', 
-      sameSite: 'lax',
+      sameSite: 'none',
     });
   return response.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
