@@ -58,7 +58,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Get the frontend URL from environment variables
-  const frontendUrl = process.env.FRONTEND_URL || 'https://kenzy-dashboard.onrender.com';
+  const frontendUrl = 'https://herbal-beta.vercel.app' || 'https://kenzy-dashboard.onrender.com';
 
   app.enableCors({
     origin: frontendUrl,
