@@ -96,7 +96,7 @@ export class ProductController {
     private readonly userService: UserService,
   ) {}
 
-  @UseGuards(JwtGuard)
+  // @UseGuards(JwtGuard)
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
@@ -112,13 +112,13 @@ export class ProductController {
   async createProduct(
     @UploadedFile() file: Express.Multer.File,
     @Body() createProductDto: CreateProductDto,
-    @Req() req: Request // Access the request object
+    // @Req() req: Request // Access the request object
   ) {
     if (!file) {
       throw new BadRequestException('Image file is required');
     }
 
-    const userId = req['userId']; // Access the userId from the request
+    const userId = createProductDto.userId // Access the userId from the request
     const user = await this.userService.findOne(userId);
     if (!user) {
       throw new BadRequestException('User not found');
