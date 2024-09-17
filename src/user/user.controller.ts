@@ -84,74 +84,137 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() createAuthDto: CreateAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
-    // console.log(createAuthDto.email)
-    // console.log(createAuthDto.password)
-  try {      
-    
+async login(@Body() createAuthDto: CreateAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
+  try {
     const result = await this.userService.login(createAuthDto);
-    // console.log(result)
-    const  email =  result.email
-    const  id =  result.id
-    const  role =  result.role
+    const { email, id, role } = result;
     const payload = { email: email, sub: id };
     const rolePayload = { role: role, sub: id };
 
-    // Sign JWT for access token with a longer expiry time
+    // Sign JWT for access token
     const jwtTokenKeys = await this.jwt.signAsync(payload, {
       expiresIn: '1d',
       secret: this.configService.get<string>('ACCESS_TOKEN'),   
     });
 
-    // Sign JWT for refresh token with a longer expiry time
+    // Sign JWT for refresh token
     const jwtRefreshTokenKeys = await this.jwt.signAsync(payload, {
       expiresIn: '7d',
       secret: this.configService.get<string>('REFRESH_TOKEN'),   
     });
 
-      // Sign JWT for role token with a longer expiry time
-      const roleToken = await this.jwt.signAsync(rolePayload, {
-        expiresIn: '7d',
-        secret: this.configService.get<string>('ROLE_TOKEN'),   
-      });
+    // Sign JWT for role token
+    const roleToken = await this.jwt.signAsync(rolePayload, {
+      expiresIn: '7d',
+      secret: this.configService.get<string>('ROLE_TOKEN'),   
+    });
 
-      // Set HttpOnly cookie for the access token
+    // Set HttpOnly cookie for access token
     response.cookie('accessToken', jwtTokenKeys, {
-      httpOnly: false,
-      secure: true,
-      maxAge: 7 * 12 * 60 * 60 * 1000,  // 7 hours in milliseconds
-      // path: '/',
-      sameSite: 'none',
+      httpOnly: true, // Prevent client-side access to the cookie
+      secure: true,   // Use secure cookies for HTTPS only
+      maxAge: 24 * 60 * 60 * 1000,  // 1 day in milliseconds
+      sameSite: 'none', // Allow cross-origin requests
     });
 
-    // Set HttpOnly cookie for the refresh token (if needed)
+    // Set HttpOnly cookie for refresh token
     response.cookie('refreshToken', jwtRefreshTokenKeys, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      // path: '/', 
       sameSite: 'none',
     });
 
-    // Set HttpOnly cookie for the role token (if needed)
+    // Set HttpOnly cookie for role token
     response.cookie('roleToken', roleToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      // path: '/', 
       sameSite: 'none',
     });
-  return response.status(HttpStatus.OK).json({
-        statusCode: HttpStatus.OK,
-        message: 'User successfully login',
-        jwtTokens: jwtTokenKeys,
-        roleToken: roleToken,
-      });
+
+    return response.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      message: 'User successfully logged in',
+      jwtTokens: jwtTokenKeys,
+      roleToken: roleToken,
+    });
   } catch (error) {
-    console.error('User creation failed', error);
+    console.error('Login failed', error);
     throw error;
   }
 }
+
+
+//   @Post('login')
+//   async login(@Body() createAuthDto: CreateAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
+//     // console.log(createAuthDto.email)
+//     // console.log(createAuthDto.password)
+//   try {      
+    
+//     const result = await this.userService.login(createAuthDto);
+//     // console.log(result)
+//     const  email =  result.email
+//     const  id =  result.id
+//     const  role =  result.role
+//     const payload = { email: email, sub: id };
+//     const rolePayload = { role: role, sub: id };
+
+//     // Sign JWT for access token with a longer expiry time
+//     const jwtTokenKeys = await this.jwt.signAsync(payload, {
+//       expiresIn: '1d',
+//       secret: this.configService.get<string>('ACCESS_TOKEN'),   
+//     });
+
+//     // Sign JWT for refresh token with a longer expiry time
+//     const jwtRefreshTokenKeys = await this.jwt.signAsync(payload, {
+//       expiresIn: '7d',
+//       secret: this.configService.get<string>('REFRESH_TOKEN'),   
+//     });
+
+//       // Sign JWT for role token with a longer expiry time
+//       const roleToken = await this.jwt.signAsync(rolePayload, {
+//         expiresIn: '7d',
+//         secret: this.configService.get<string>('ROLE_TOKEN'),   
+//       });
+
+//       // Set HttpOnly cookie for the access token
+//     response.cookie('accessToken', jwtTokenKeys, {
+//       httpOnly: true,
+//       secure: true,
+//       maxAge: 7 * 12 * 60 * 60 * 1000,  // 7 hours in milliseconds
+//       path: '/',
+//       sameSite: 'none',
+//     });
+
+//     // Set HttpOnly cookie for the refresh token (if needed)
+//     response.cookie('refreshToken', jwtRefreshTokenKeys, {
+//       httpOnly: true,
+//       secure: true,
+//       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+//       path: '/', 
+//       sameSite: 'none',
+//     });
+
+//     // Set HttpOnly cookie for the role token (if needed)
+//     response.cookie('roleToken', roleToken, {
+//       httpOnly: true,
+//       secure: true,
+//       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+//       path: '/', 
+//       sameSite: 'none',
+//     });
+//   return response.status(HttpStatus.OK).json({
+//         statusCode: HttpStatus.OK,
+//         message: 'User successfully login',
+//         jwtTokens: jwtTokenKeys,
+//         roleToken: roleToken,
+//       });
+//   } catch (error) {
+//     console.error('User creation failed', error);
+//     throw error;
+//   }
+// }
 
 
 //LOGOUT
