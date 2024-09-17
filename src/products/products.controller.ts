@@ -84,6 +84,7 @@ import {
   HttpCode,
   Param,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
@@ -92,6 +93,7 @@ import { CreateProductDto } from 'src/user/dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
 import { JwtGuard } from 'src/guards/jwt.guard';
 import { Request } from 'express'; // Import Request
+import { Product } from 'src/user/entities/product.entity';
 
 @Controller('products')
 export class ProductController {
@@ -135,6 +137,15 @@ export class ProductController {
   @Get('all')
   async findAll() {
     return await this.productService.findAllProducts();
+  }
+
+  @Get(':id')
+  async findProductById(@Param('id') id: string): Promise<Product> {
+    const product = await this.productService.findProductById(id);
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+    return product;
   }
 
   @Delete(':id')
