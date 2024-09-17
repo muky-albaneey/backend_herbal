@@ -80,6 +80,10 @@ import {
   Get,
   UseGuards,
   Req,
+  Delete,
+  HttpCode,
+  Param,
+  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
@@ -131,5 +135,11 @@ export class ProductController {
   @Get('all')
   async findAll() {
     return await this.productService.findAllProducts();
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT) // Sets the response status to 204 No Content
+  async deleteProduct(@Param('id') id: string) {
+    await this.productService.deleteProduct(id);
   }
 }

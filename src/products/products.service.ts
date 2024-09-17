@@ -48,4 +48,13 @@ export class ProductService {
       relations: { product_image: true}     });
     return product
   }
+
+  async deleteProduct(id: string): Promise<void> {
+    const result = await this.productRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+  }
+  
 }
