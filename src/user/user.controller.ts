@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, UseInterceptors,UploadedFile, Res, ParseUUIDPipe, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseInterceptors,UploadedFile, Res, ParseUUIDPipe, HttpStatus, UsePipes, ValidationPipe, ConsoleLogger } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateAuthDto, ForgotPass, LoginAuthDto,  } from './dto/create-user.dto';
 // import { Response } from 'express';
@@ -86,6 +86,7 @@ export class UserController {
   @Post('login')
 async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
   try {
+    console.log(LoginAuthDto)
     const result = await this.userService.login(createAuthDto);
     const { email, id, role } = result;
     const payload = { email: email, sub: id };
