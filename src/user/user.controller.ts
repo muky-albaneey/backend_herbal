@@ -86,7 +86,7 @@ export class UserController {
   @Post('login')
 async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
   try {
-    console.log(LoginAuthDto)
+    console.log(createAuthDto)
     const result = await this.userService.login(createAuthDto);
     const { email, id, role } = result;
     const payload = { email: email, sub: id };
