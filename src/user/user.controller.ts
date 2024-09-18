@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, UseInterceptors,UploadedFile, Res, ParseUUIDPipe, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateAuthDto, ForgotPass,  } from './dto/create-user.dto';
+import { CreateAuthDto, ForgotPass, LoginAuthDto,  } from './dto/create-user.dto';
 // import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -84,7 +84,7 @@ export class UserController {
   }
 
   @Post('login')
-async login(@Body() createAuthDto: CreateAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
+async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) response: Response): Promise<any> {
   try {
     const result = await this.userService.login(createAuthDto);
     const { email, id, role } = result;

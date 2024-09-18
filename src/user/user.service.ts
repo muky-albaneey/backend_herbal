@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { CreateAuthDto, ForgotPass } from './dto/create-user.dto';
+import { CreateAuthDto, ForgotPass, LoginAuthDto } from './dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -53,7 +53,7 @@ export class UserService {
     }
   }
 
-  async login(createAuthDto: CreateAuthDto): Promise<any> {
+  async login(createAuthDto: LoginAuthDto): Promise<any> {
     try {
       const userValidate = await this.userRepository.findOne({
         where: { email: createAuthDto.email },
