@@ -58,7 +58,7 @@ export class ProductService {
   }
 
   async findProductById(id): Promise<Product> {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true}  });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
