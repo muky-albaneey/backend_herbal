@@ -65,4 +65,74 @@ export class ProductService {
     return product;
   }
 
+  // async updateProductWithImage(
+  //   id,
+  //   createProductDto: CreateProductDto,
+  //   file?: Express.Multer.File
+  // ): Promise<Product> {
+  //   // Find the product by ID
+  //   const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
+  //   if (!product) {
+  //     throw new NotFoundException(`Product with ID ${id} not found`);
+  //   }
+  
+  //   // Update product details
+  //   Object.assign(product, createProductDto);
+  
+  //   // If a new file is provided, update the image
+  //   if (file) {
+  //     const ext = path.extname(file.originalname).toLowerCase();
+  //     const base64Image = file.buffer.toString('base64');
+  
+  //     const productImage = this.productImageRepository.create({
+  //       name: file.originalname,
+  //       base64: base64Image,
+  //       ext: ext.slice(1),
+  //       content: file.buffer,
+  //     });
+  
+  //     // Save the new image
+  //     const savedProductImage = await this.productImageRepository.save(productImage);
+  //     product.product_image = savedProductImage;
+  //   }
+  
+  //   // Save the updated product
+  //   return await this.productRepository.save(product);
+  // }
+  async patchProductWithImage(
+    id: string,
+    updateProductDto: Partial<CreateProductDto>,
+    file?: Express.Multer.File
+  ): Promise<Product> {
+    // Find the product by ID
+    const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+  
+    // Update product details with the provided fields
+    Object.assign(product, updateProductDto);
+  
+    // If a new file is provided, update the image
+    if (file) {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const base64Image = file.buffer.toString('base64');
+  
+      const productImage = this.productImageRepository.create({
+        name: file.originalname,
+        base64: base64Image,
+        ext: ext.slice(1),
+        content: file.buffer,
+      });
+  
+      // Save the new image
+      const savedProductImage = await this.productImageRepository.save(productImage);
+      product.product_image = savedProductImage;
+    }
+  
+    // Save the updated product
+    return await this.productRepository.save(product);
+  }
+  
+  
 }
