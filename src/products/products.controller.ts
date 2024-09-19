@@ -148,12 +148,12 @@ export class ProductController {
     }
     return product;
   }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT) // Sets the response status to 204 No Content
-  async deleteProduct(@Param('id') id: string) {
-    await this.productService.deleteProduct(id);
+  @Get('count')
+  async countAllProducts() {
+    return await this.productService.countAllProducts();
   }
+  
+  
 
   // @Put(':id')
   // @UseInterceptors(
@@ -192,5 +192,11 @@ export class ProductController {
     @Body() updateProductDto: Partial<CreateProductDto>,
   ) {
     return await this.productService.patchProductWithImage(id, updateProductDto, file);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT) // Sets the response status to 204 No Content
+  async deleteProduct(@Param('id') id: string) {
+    await this.productService.deleteProduct(id);
   }
 }

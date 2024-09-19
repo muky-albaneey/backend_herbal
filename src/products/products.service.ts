@@ -65,6 +65,10 @@ export class ProductService {
     return product;
   }
 
+    async countAllProducts(): Promise<number> {
+      return await this.productRepository.count();
+    }
+
   // async updateProductWithImage(
   //   id,
   //   createProductDto: CreateProductDto,
