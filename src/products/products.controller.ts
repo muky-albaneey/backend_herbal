@@ -148,6 +148,8 @@ export class ProductController {
     }
     return product;
   }
+
+  
   @Get('count')
   async countAllProducts() {
     return await this.productService.countAllProducts();
