@@ -139,7 +139,10 @@ export class ProductController {
   async findAll() {
     return await this.productService.findAllProducts();
   }
-
+  @Get('count')
+  async countAllProducts() {
+    return await this.productService.countAllProducts();
+  }
   @Get(':id')
   async findProductById(@Param('id') id: string): Promise<Product> {
     const product = await this.productService.findProductById(id);
@@ -148,10 +151,7 @@ export class ProductController {
     }
     return product;
   }
-  @Get('count')
-  async countAllProducts() {
-    return await this.productService.countAllProducts();
-  }
+
   
   
 
