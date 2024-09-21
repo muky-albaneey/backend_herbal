@@ -117,5 +117,48 @@ export class ProductService {
     return products;
   }
   
+  async findFirstTenProducts() {
+    const products = await this.productRepository.find({
+      take: 10, // Limits the result to the first 10 products
+      relations: { product_image: true },
+    });
+
+    return products;
+  }
+  async findMiddleSevenProducts() {
+    // Get the total number of products
+    const totalProducts = await this.productRepository.count();
+
+    if (totalProducts < 7) {
+      throw new NotFoundException('Not enough products to retrieve the middle seven');
+    }
+
+    // Calculate the starting index for the middle seven products
+    const middleIndex = Math.floor(totalProducts / 2) - Math.floor(7 / 2);
+    const offset = Math.max(0, middleIndex); // Ensure offset doesn't go below 0
+
+    // Retrieve the middle seven products
+    const products = await this.productRepository.find({
+      skip: offset,  // Skip the products before the middle index
+      take: 7,  // Take the next 7 products
+      order: { createdAt: 'ASC' },  // Order by creation date, oldest first
+      relations: { product_image: true },  // Fetch related product images
+    });
+
+    return products;
+  }
+  async findLastTenProducts() {
+    const products = await this.productRepository.find({
+      order: { createdAt: 'DESC' },  // Order by creation date, newest first
+      take: 10,  // Limit the result to 10 products
+      relations: { product_image: true },  // Fetch related product images
+    });
+
+    if (!products || products.length === 0) {
+      throw new NotFoundException('No products found');
+    }
+
+    return products;
+  }
   
 }

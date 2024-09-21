@@ -72,6 +72,22 @@ export class ProductController {
   async countAllProducts() {
     return await this.productService.countAllProducts();
   }
+  @Get('first-ten')
+  async getFirstTenProducts() {
+    return this.productService.findFirstTenProducts();
+  }
+
+  @Get('middle-seven')
+  async getMiddleSevenProducts() {
+    return await this.productService.findMiddleSevenProducts();
+  }
+
+  @Get('last-ten')
+  async getLastTenProducts() {
+    return await this.productService.findLastTenProducts();
+  }
+
+
   @Get('category/:category')
   async getProductsByCategory(@Param('category') category: string) {
     return this.productService.findProductsByCategory(category);
