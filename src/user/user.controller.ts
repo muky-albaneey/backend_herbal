@@ -190,6 +190,12 @@ async reset(@Body() body: { token: string }) {
       return await this.userService.findAll();
     }
 
+  @Get('count')
+  async getUserCount(): Promise<{ totalUsers: number }> {
+    const totalUsers = await this.userService.countUsers();
+    return { totalUsers };
+  }
+
   @Get(':id/single_user')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
       return await this.userService.findOne(id);

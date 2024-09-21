@@ -205,4 +205,8 @@ export class UserService {
     // Save the updated user entity to the database
     return await this.userRepository.save(user);
   }
+
+  async countUsers(): Promise<number> {
+    return await this.userRepository.count();
+  }
 }
