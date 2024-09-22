@@ -73,7 +73,7 @@ async function bootstrap() {
         'https://herbal-beta.vercel.app',
       ];
   
-      console.log('Incoming origin:', origin); // Log incoming origin for debugging
+      console.log('Incoming origin:', origin); // For debugging
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -84,6 +84,7 @@ async function bootstrap() {
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
+  
   
   
   app.useGlobalPipes(new ValidationPipe({
