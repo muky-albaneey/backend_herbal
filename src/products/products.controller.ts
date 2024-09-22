@@ -100,10 +100,7 @@ export class ProductController {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
     return product;
-  }
-
-  
-  
+  }  
 
   // @Put(':id')
   // @UseInterceptors(
