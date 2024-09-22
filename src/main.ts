@@ -63,7 +63,7 @@ async function bootstrap() {
   // Define allowed frontend URLs
   const frontendUrls = [
     'https://kenzy-dashboard.onrender.com',
-    'https://herbal-beta.vercel.app',
+    'https://herbal-beta.vercel.app/',
   ];
 
   app.enableCors({
