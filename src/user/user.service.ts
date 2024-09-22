@@ -137,11 +137,7 @@ export class UserService {
 
 
   async findOne(id){
-    // const user = await this.userRepository.findOne({
-    //   where: { id },
-    //   relations: ['onboard_info'],
-      
-    // });
+  
     const user = await this.userRepository.findOne({
       where: { id },
       relations: { profile_image: true}      // relations: {profile_bg: true, profile_image : true},

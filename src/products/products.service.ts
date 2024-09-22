@@ -45,7 +45,7 @@ export class ProductService {
 
   async findAllProducts() {
     const product = await this.productRepository.find({      
-      relations: { product_image: true}     });
+      relations: { product_image: true} });
     return product
   }
 
@@ -92,7 +92,7 @@ export class ProductService {
         name: file.originalname,
         base64: base64Image,
         ext: ext.slice(1),
-        content: file.buffer,
+        // content: file.buffer,
       });
   
       // Save the new image
