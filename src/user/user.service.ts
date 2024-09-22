@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { CreateAuthDto, ForgotPass, LoginAuthDto } from './dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from 'src/mail/mail.service';
@@ -183,7 +183,7 @@ export class UserService {
     if (user.profile_image) {
       // Update existing profile background entity
       user.profile_image.name = image.originalname;
-      user.profile_image.content = image.buffer;
+      // user.profile_image.content = image.buffer;
       user.profile_image.ext = path.extname(image.originalname).toLowerCase().slice(1).trim();
       user.profile_image.base64 = image.buffer.toString('base64');
   
@@ -193,7 +193,7 @@ export class UserService {
       // Create new profile background entity
       const newProfileBg = new ProfileImage({
         name: image.originalname,
-        content: image.buffer,
+        // content: image.buffer,
         ext: path.extname(image.originalname).toLowerCase().slice(1).trim(),
         base64: image.buffer.toString('base64'),
       });

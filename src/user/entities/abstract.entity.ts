@@ -13,9 +13,6 @@ export class AbstractFileEntity<T> {
     @Column({ type: 'varchar',  nullable: true })
     base64: string;
   
-    @Column({ nullable: true, type: 'bytea' })
-    content: Buffer;
-  
     @Column({ type: 'varchar', length: 10, nullable: true })
     ext: string;
 

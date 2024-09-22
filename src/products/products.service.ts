@@ -28,7 +28,7 @@ export class ProductService {
       name: file.originalname,
       base64: base64Image,
       ext: ext.slice(1),
-      content: file.buffer,
+      // content: file.buffer,
     });
 
     const savedProductImage = await this.productImageRepository.save(productImage);
