@@ -60,7 +60,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // Define frontend URLs
+  // Define allowed frontend URLs
   const frontendUrls = [
     'https://kenzy-dashboard.onrender.com',
     'https://herbal-beta.vercel.app',
@@ -68,12 +68,13 @@ async function bootstrap() {
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., mobile apps, curl requests)
+      console.log('Incoming origin:', origin); // Log incoming origin for debugging
       if (!origin || frontendUrls.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
+      } else {
+        console.warn(`CORS error: ${origin} is not allowed`);
+        callback(new Error('Not allowed by CORS'));
       }
-      // Reject requests from unknown origins
-      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
@@ -91,4 +92,5 @@ async function bootstrap() {
     console.log(`Running in ${configService.get<string>('NODE_ENV')} on port ${PORT}`);
   });
 }
+
 bootstrap();
