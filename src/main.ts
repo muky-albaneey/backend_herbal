@@ -18,8 +18,11 @@
 
 //   app.use(cookieParser());
 
+//   // Get the frontend URL from environment variables
+//   const frontendUrl =  'https://kenzy-dashboard.onrender.com' || 'https://herbal-beta.vercel.app';
+
 //   app.enableCors({
-//     origin: true,
+//     origin: frontendUrl,
 //     credentials: true,
 //     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
 //   });
@@ -57,11 +60,21 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // Get the frontend URL from environment variables
-  const frontendUrl =  'https://kenzy-dashboard.onrender.com' || 'https://herbal-beta.vercel.app';
+  // Define frontend URLs
+  const frontendUrls = [
+    'https://kenzy-dashboard.onrender.com',
+    'https://herbal-beta.vercel.app',
+  ];
 
   app.enableCors({
-    origin: frontendUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps, curl requests)
+      if (!origin || frontendUrls.includes(origin)) {
+        return callback(null, true);
+      }
+      // Reject requests from unknown origins
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
