@@ -79,20 +79,25 @@ async function bootstrap() {
   //   credentials: true,
   //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   // });
-  app.enableCors({
-    origin: (origin, callback) => {
-      console.log('Incoming origin:', origin);
-      if (!origin || frontendUrls.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS error: ${origin} is not allowed`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: (origin, callback) => {
+  //     console.log('Incoming origin:', origin); // This logs the incoming origin
+  //     if (!origin || frontendUrls.includes(origin)) {
+  //       callback(null, true);
+  //     } else {
+  //       console.warn(`CORS error: ${origin} is not allowed`);
+  //       callback(new Error('Not allowed by CORS'));
+  //     }
+  //   },    
+  //   credentials: true,
+  // });
     
-
+  app.enableCors({
+    origin: '*', // Allow all origins (not recommended for production)
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  });
+  
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
