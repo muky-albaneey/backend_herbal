@@ -63,7 +63,7 @@ async function bootstrap() {
 
   // Define allowed frontend URLs
   const allowedOrigins = [
-    'https://kenzy-dashboard.onrender.com',
+    // 'https://kenzy-dashboard.onrender.com',
     'https://herbal-beta.vercel.app',
   ];
 
