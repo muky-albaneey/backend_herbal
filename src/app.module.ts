@@ -33,6 +33,9 @@ import { Order } from './user/entities/order.entity';
         database: configService.get<string>('DATABASE_NAME'),
         entities: [User,  ProductImage, Product, ProfileImage, Order],
         synchronize: true, 
+        ssl: {
+          rejectUnauthorized: false,
+        },
         migrations: ['src/migrations/*.ts'],
       }),
     }),
