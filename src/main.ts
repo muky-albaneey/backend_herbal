@@ -80,7 +80,6 @@ async function bootstrap() {
     // },
 
     origin: frontendUrl,
-    
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
