@@ -7,37 +7,148 @@ import { Product } from 'src/user/entities/product.entity';
 import { ProductImage } from 'src/user/entities/product_img.entity';
 import { CreateProductDto } from 'src/user/dto/create-product.dto';
 import { User } from 'src/user/entities/user.entity';
-
+import * as AWS from 'aws-sdk';
 
 @Injectable()
 export class ProductService {
+  private s3: AWS.S3;
+  private bucketName: string;
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(ProductImage) private productImageRepository: Repository<ProductImage>,
-  ) {}
+  ) {
+    // this.s3 = new AWS.S3({
+    //   endpoint: process.env.LINODE_BUCKET_ENDPOINT, // Linode bucket endpoint
+    //   accessKeyId: process.env.LINODE_ACCESS_KEY, // Access key
+    //   secretAccessKey: process.env.LINODE_SECRET_KEY, // Secret key
+    //   region: process.env.LINODE_BUCKET_REGION, // Bucket region
+    //   s3ForcePathStyle: true, // This is required for Linode Object Storage
+    // });
+    // this.bucketName = process.env.LINODE_BUCKET_NAME; // Set bucket name
+    this.s3 = new AWS.S3({
+      endpoint: process.env.LINODE_BUCKET_ENDPOINT, // Linode bucket endpoint
+      accessKeyId: process.env.LINODE_ACCESS_KEY, // Access key
+      secretAccessKey: process.env.LINODE_SECRET_KEY, // Secret key
+      region: process.env.LINODE_BUCKET_REGION, // Bucket region
+      s3ForcePathStyle: true, // Linode-specific setting
+    });
+    this.bucketName = process.env.LINODE_BUCKET_NAME; // Set bucket name
+  }
 
+  // async createProductWithImage(
+  //   createProductDto: CreateProductDto,
+  //   file: Express.Multer.File,
+  //   user: User,
+  // ) {
+  //   const ext = path.extname(file.originalname).toLowerCase();
+  //   const base64Image = file.buffer.toString('base64');
+
+  //   const productImage = this.productImageRepository.create({
+  //     name: file.originalname,
+  //     base64: base64Image,
+  //     ext: ext.slice(1),
+  //     // content: file.buffer,
+  //   });
+
+  //   const savedProductImage = await this.productImageRepository.save(productImage);
+
+  //   // Create the product with reference to the user
+  //   const newProduct = this.productRepository.create({
+  //     ...createProductDto,
+  //     product_image: savedProductImage,
+  //     user,  // Associate product with user
+  //   });
+
+  //   return await this.productRepository.save(newProduct);
+  // }
+  
+  // async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
+  //   const params = {
+  //     Bucket: this.bucketName,
+  //     Key: `${Date.now()}-${file.originalname}`, // Unique filename
+  //     Body: file.buffer, // File content
+  //     ContentType: file.mimetype, // Set content type (e.g., image/jpeg)
+  //     ACL: 'public-read', // Make the file publicly accessible
+  //   };
+
+  //   const uploadResult = await this.s3.upload(params).promise();
+  //   return uploadResult.Location; // Return the URL of the uploaded file
+  // }
+
+  // async createProductWithImage(
+  //   createProductDto: CreateProductDto,
+  //   file: Express.Multer.File,
+  //   user: User,
+  // ) {
+  //   if (!file) {
+  //     throw new BadRequestException('Image file is required');
+  //   }
+
+  //   // Upload file to Linode Object Storage and get the file URL
+  //   const fileUrl = await this.uploadFileToLinode(file);
+
+  //   // Create a new product image entity with the file URL
+  //   const productImage = this.productImageRepository.create({
+  //     name: file.originalname,
+  //     url: fileUrl, // Store the file URL in the database
+  //     ext: path.extname(file.originalname).slice(1),
+  //   });
+
+  //   const savedProductImage = await this.productImageRepository.save(productImage);
+
+  //   // Create the product with reference to the user and the saved image
+  //   const newProduct = this.productRepository.create({
+  //     ...createProductDto,
+  //     product_image: savedProductImage,
+  //     user,  // Associate product with user
+  //   });
+
+  //   return await this.productRepository.save(newProduct);
+  // }
+  async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
+    const params = {
+      Bucket: this.bucketName,
+      Key: `${Date.now()}-${file.originalname}`, // Unique filename
+      Body: file.buffer, // File content
+      ContentType: file.mimetype, // Set content type (e.g., image/jpeg)
+      ACL: 'public-read', // Make the file publicly accessible
+    };
+
+    try {
+      const uploadResult = await this.s3.upload(params).promise();
+      return uploadResult.Location; // Return the URL of the uploaded file
+    } catch (error) {
+      throw new BadRequestException('Error uploading file to Linode Object Storage');
+    }
+  }
+
+  // Create product with image
   async createProductWithImage(
     createProductDto: CreateProductDto,
     file: Express.Multer.File,
     user: User,
   ) {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const base64Image = file.buffer.toString('base64');
+    if (!file) {
+      throw new BadRequestException('Image file is required');
+    }
 
+    // Upload file to Linode Object Storage and get the URL
+    const fileUrl = await this.uploadFileToLinode(file);
+
+    // Save product image in the database
     const productImage = this.productImageRepository.create({
       name: file.originalname,
-      base64: base64Image,
-      ext: ext.slice(1),
-      // content: file.buffer,
+      url: fileUrl, // Store the file URL in the database
+      ext: path.extname(file.originalname).slice(1),
     });
 
     const savedProductImage = await this.productImageRepository.save(productImage);
 
-    // Create the product with reference to the user
+    // Create the product with the saved image and associated user
     const newProduct = this.productRepository.create({
       ...createProductDto,
       product_image: savedProductImage,
-      user,  // Associate product with user
+      user, // Associate product with the user
     });
 
     return await this.productRepository.save(newProduct);
