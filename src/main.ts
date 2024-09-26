@@ -66,7 +66,7 @@ async function bootstrap() {
   //   // 'https://kenzy-dashboard.onrender.com',
   //   'https://herbal-beta.vercel.app',
   // ];
-  const frontendUrl = 'https://kenzyherbals.vercel.app/';
+  const frontendUrl = 'https://kenzyherbals.vercel.app';
 
   app.enableCors({
     // origin: (origin, callback) => {
