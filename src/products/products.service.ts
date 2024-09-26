@@ -180,40 +180,40 @@ export class ProductService {
       return await this.productRepository.count();
     }
 
-  async patchProductWithImage(
-    id,
-    updateProductDto: Partial<CreateProductDto>,
-    file?: Express.Multer.File
-  ): Promise<Product> {
-    // Find the product by ID
-    const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
-    }
+  // async patchProductWithImage(
+  //   id,
+  //   updateProductDto: Partial<CreateProductDto>,
+  //   file?: Express.Multer.File
+  // ): Promise<Product> {
+  //   // Find the product by ID
+  //   const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
+  //   if (!product) {
+  //     throw new NotFoundException(`Product with ID ${id} not found`);
+  //   }
   
-    // Update product details with the provided fields
-    Object.assign(product, updateProductDto);
+  //   // Update product details with the provided fields
+  //   Object.assign(product, updateProductDto);
   
-    // If a new file is provided, update the image
-    if (file) {
-      const ext = path.extname(file.originalname).toLowerCase();
-      const base64Image = file.buffer.toString('base64');
+  //   // If a new file is provided, update the image
+  //   if (file) {
+  //     const ext = path.extname(file.originalname).toLowerCase();
+  //     const base64Image = file.buffer.toString('base64');
   
-      const productImage = this.productImageRepository.create({
-        name: file.originalname,
-        base64: base64Image,
-        ext: ext.slice(1),
-        // content: file.buffer,
-      });
+  //     const productImage = this.productImageRepository.create({
+  //       name: file.originalname,
+  //       base64: base64Image,
+  //       ext: ext.slice(1),
+  //       // content: file.buffer,
+  //     });
   
-      // Save the new image
-      const savedProductImage = await this.productImageRepository.save(productImage);
-      product.product_image = savedProductImage;
-    }
+  //     // Save the new image
+  //     const savedProductImage = await this.productImageRepository.save(productImage);
+  //     product.product_image = savedProductImage;
+  //   }
   
-    // Save the updated product
-    return await this.productRepository.save(product);
-  }
+  //   // Save the updated product
+  //   return await this.productRepository.save(product);
+  // }
   
   async findProductsByCategory(category: string): Promise<Product[]> {
     const products = await this.productRepository.find({
