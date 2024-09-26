@@ -66,17 +66,21 @@ async function bootstrap() {
     // 'https://kenzy-dashboard.onrender.com',
     'https://herbal-beta.vercel.app',
   ];
+  const frontendUrl = 'https://kenzyherbals.vercel.app/';
 
   app.enableCors({
-    origin: (origin, callback) => {
-      console.log('Incoming origin:', origin); // Log for debugging
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS error: ${origin} is not allowed`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    // origin: (origin, callback) => {
+    //   console.log('Incoming origin:', origin); // Log for debugging
+    //   if (!origin || allowedOrigins.includes(origin)) {
+    //     callback(null, true);
+    //   } else {
+    //     console.warn(`CORS error: ${origin} is not allowed`);
+    //     callback(new Error('Not allowed by CORS'));
+    //   }
+    // },
+
+    origin: frontendUrl,
+    
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
