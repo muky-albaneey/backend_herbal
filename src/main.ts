@@ -62,10 +62,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Define allowed frontend URLs
-  const allowedOrigins = [
-    // 'https://kenzy-dashboard.onrender.com',
-    'https://herbal-beta.vercel.app',
-  ];
+  // const allowedOrigins = [
+  //   // 'https://kenzy-dashboard.onrender.com',
+  //   'https://herbal-beta.vercel.app',
+  // ];
   const frontendUrl = 'https://kenzyherbals.vercel.app/';
 
   app.enableCors({
