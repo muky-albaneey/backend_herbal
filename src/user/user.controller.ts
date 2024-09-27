@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserRole } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -210,6 +211,14 @@ async reset(@Body() body: { token: string }) {
     const result = await this.userService.updateProfileBg(id, file); 
     console.log(result)
     return result;
+  }
+
+  @Patch(':id/role')
+  async changeUserRole(
+    @Param('id') userId: string,
+    @Body('role') newRole: UserRole
+  ) {
+    return await this.userService.changeUserRole(userId, newRole);
   }
 
 
