@@ -215,7 +215,7 @@ export class ProductService {
   //   return await this.productRepository.save(product);
   // }
   async patchProductWithImage(
-    id: string,
+    id,
     updateProductDto: Partial<CreateProductDto>,
     file?: Express.Multer.File,
   ): Promise<Product> {
