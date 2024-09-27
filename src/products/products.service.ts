@@ -214,7 +214,37 @@ export class ProductService {
   //   // Save the updated product
   //   return await this.productRepository.save(product);
   // }
-  
+  async patchProductWithImage(
+    id: string,
+    updateProductDto: Partial<CreateProductDto>,
+    file?: Express.Multer.File,
+  ): Promise<Product> {
+    // Find the product by ID
+    const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    // Update product details with the provided fields
+    Object.assign(product, updateProductDto);
+
+    // If a new file is provided, upload to S3 and update the image URL
+    if (file) {
+      const fileUrl = await this.uploadFileToLinode(file);
+      
+      const productImage = this.productImageRepository.create({
+        name: file.originalname,
+        url: fileUrl, // Save the S3 URL
+        ext: path.extname(file.originalname).slice(1),
+      });
+
+      const savedProductImage = await this.productImageRepository.save(productImage);
+      product.product_image = savedProductImage;
+    }
+
+    // Save the updated product
+    return await this.productRepository.save(product);
+  }
   async findProductsByCategory(category: string): Promise<Product[]> {
     const products = await this.productRepository.find({
       where: { category },
