@@ -17,13 +17,7 @@ export class ProductService {
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(ProductImage) private productImageRepository: Repository<ProductImage>,
   ) {
-    // this.s3 = new AWS.S3({
-    //   endpoint: process.env.LINODE_BUCKET_ENDPOINT, // Linode bucket endpoint
-    //   accessKeyId: process.env.LINODE_ACCESS_KEY, // Access key
-    //   secretAccessKey: process.env.LINODE_SECRET_KEY, // Secret key
-    //   region: process.env.LINODE_BUCKET_REGION, // Bucket region
-    //   s3ForcePathStyle: true, // This is required for Linode Object Storage
-    // });
+   
     // this.bucketName = process.env.LINODE_BUCKET_NAME; // Set bucket name
     this.s3 = new AWS.S3({
       endpoint: process.env.LINODE_BUCKET_ENDPOINT, // Linode bucket endpoint
@@ -35,76 +29,7 @@ export class ProductService {
     this.bucketName = process.env.LINODE_BUCKET_NAME; // Set bucket name
   }
 
-  // async createProductWithImage(
-  //   createProductDto: CreateProductDto,
-  //   file: Express.Multer.File,
-  //   user: User,
-  // ) {
-  //   const ext = path.extname(file.originalname).toLowerCase();
-  //   const base64Image = file.buffer.toString('base64');
 
-  //   const productImage = this.productImageRepository.create({
-  //     name: file.originalname,
-  //     base64: base64Image,
-  //     ext: ext.slice(1),
-  //     // content: file.buffer,
-  //   });
-
-  //   const savedProductImage = await this.productImageRepository.save(productImage);
-
-  //   // Create the product with reference to the user
-  //   const newProduct = this.productRepository.create({
-  //     ...createProductDto,
-  //     product_image: savedProductImage,
-  //     user,  // Associate product with user
-  //   });
-
-  //   return await this.productRepository.save(newProduct);
-  // }
-  
-  // async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
-  //   const params = {
-  //     Bucket: this.bucketName,
-  //     Key: `${Date.now()}-${file.originalname}`, // Unique filename
-  //     Body: file.buffer, // File content
-  //     ContentType: file.mimetype, // Set content type (e.g., image/jpeg)
-  //     ACL: 'public-read', // Make the file publicly accessible
-  //   };
-
-  //   const uploadResult = await this.s3.upload(params).promise();
-  //   return uploadResult.Location; // Return the URL of the uploaded file
-  // }
-
-  // async createProductWithImage(
-  //   createProductDto: CreateProductDto,
-  //   file: Express.Multer.File,
-  //   user: User,
-  // ) {
-  //   if (!file) {
-  //     throw new BadRequestException('Image file is required');
-  //   }
-
-  //   // Upload file to Linode Object Storage and get the file URL
-  //   const fileUrl = await this.uploadFileToLinode(file);
-
-  //   // Create a new product image entity with the file URL
-  //   const productImage = this.productImageRepository.create({
-  //     name: file.originalname,
-  //     url: fileUrl, // Store the file URL in the database
-  //     ext: path.extname(file.originalname).slice(1),
-  //   });
-
-  //   const savedProductImage = await this.productImageRepository.save(productImage);
-
-  //   // Create the product with reference to the user and the saved image
-  //   const newProduct = this.productRepository.create({
-  //     ...createProductDto,
-  //     product_image: savedProductImage,
-  //     user,  // Associate product with user
-  //   });
-
-  //   return await this.productRepository.save(newProduct);
-  // }
   async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
     const params = {
       Bucket: this.bucketName,
@@ -180,40 +105,6 @@ export class ProductService {
       return await this.productRepository.count();
     }
 
-  // async patchProductWithImage(
-  //   id,
-  //   updateProductDto: Partial<CreateProductDto>,
-  //   file?: Express.Multer.File
-  // ): Promise<Product> {
-  //   // Find the product by ID
-  //   const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true } });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with ID ${id} not found`);
-  //   }
-  
-  //   // Update product details with the provided fields
-  //   Object.assign(product, updateProductDto);
-  
-  //   // If a new file is provided, update the image
-  //   if (file) {
-  //     const ext = path.extname(file.originalname).toLowerCase();
-  //     const base64Image = file.buffer.toString('base64');
-  
-  //     const productImage = this.productImageRepository.create({
-  //       name: file.originalname,
-  //       base64: base64Image,
-  //       ext: ext.slice(1),
-  //       // content: file.buffer,
-  //     });
-  
-  //     // Save the new image
-  //     const savedProductImage = await this.productImageRepository.save(productImage);
-  //     product.product_image = savedProductImage;
-  //   }
-  
-  //   // Save the updated product
-  //   return await this.productRepository.save(product);
-  // }
   async patchProductWithImage(
     id,
     updateProductDto: Partial<CreateProductDto>,
@@ -301,5 +192,38 @@ export class ProductService {
 
     return products;
   }
+
+  async deleteAllProducts(): Promise<void> {
+    const products = await this.productRepository.find({
+      relations: { product_image: true },
+    });
+  
+    if (products.length === 0) {
+      throw new NotFoundException('No products found to delete');
+    }
+  
+    // Delete each product and its associated image
+    for (const product of products) {
+      if (product.product_image) {
+        // Delete the associated image from Linode (optional step)
+        try {
+          const deleteParams = {
+            Bucket: this.bucketName,
+            Key: path.basename(product.product_image.url), // Extract the key from the image URL
+          };
+          await this.s3.deleteObject(deleteParams).promise();
+        } catch (error) {
+          console.error(`Error deleting image from Linode: ${error.message}`);
+        }
+  
+        // Delete the image from the database
+        await this.productImageRepository.delete(product.product_image.id);
+      }
+  
+      // Delete the product itself
+      await this.productRepository.delete(product.id);
+    }
+  }
+  
   
 }
