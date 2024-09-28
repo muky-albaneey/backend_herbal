@@ -134,14 +134,24 @@ private convertAmount(amount: number, currency: string): number {
           data += chunk;
         });
 
+        // res.on('end', () => {
+        //   const response = JSON.parse(data);
+        //   if (res.statusCode === 200) {
+        //     resolve(response);
+        //   } else {
+        //     reject(new HttpException(response, res.statusCode));
+        //   }
+        // });
         res.on('end', () => {
           const response = JSON.parse(data);
+          console.log('Paystack verification response:', response); // Log the response
           if (res.statusCode === 200) {
             resolve(response);
           } else {
             reject(new HttpException(response, res.statusCode));
           }
         });
+        
       });
 
       req.on('error', (error) => {

@@ -62,13 +62,16 @@ async initializePayment(
       return res.status(400).send('Invalid signature');
     }
   }
-  @Get('verify-payment') // Change to GET and use Query
+  @Get('verify-payment')
   async verifyPayment(@Query('reference') reference: string) {
+    console.log('Received reference for verification:', reference);
     try {
       const response = await this.paystackService.verifyPayment(reference);
       return { status: 'success', data: response };
     } catch (error) {
+      console.error('Payment verification error:', error.message);
       return { status: 'error', message: error.message };
     }
   }
+  
 }
