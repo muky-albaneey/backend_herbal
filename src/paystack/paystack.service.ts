@@ -6,12 +6,57 @@ export class PaystackService {
   private readonly secretKey = 'sk_test_c1e0adc5d2721ff5ed3a8c1a7dcd3f6c6f8a9902'; // Replace with your Paystack secret key
 
 // Modify the initializePayment function to handle different currencies
+// async initializePayment(email: string, amount: number, currency: string, callback_url: string): Promise<any> {
+//   const params = JSON.stringify({
+//     email: email,
+//     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
+//     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
+//     callback_url: 'callback_url' // Include the callback URL here
+//   });
+
+//   const options = {
+//     hostname: 'api.paystack.co',
+//     port: 443,
+//     path: '/transaction/initialize',
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${this.secretKey}`,
+//       'Content-Type': 'application/json',
+//     },
+//   };
+
+//   return new Promise((resolve, reject) => {
+//     const req = https.request(options, (res) => {
+//       let data = '';
+
+//       res.on('data', (chunk) => {
+//         data += chunk;
+//       });
+
+//       res.on('end', () => {
+//         const response = JSON.parse(data);
+//         if (res.statusCode === 200) {
+//           resolve(response);
+//         } else {
+//           reject(new HttpException(response, res.statusCode));
+//         }
+//       });
+//     });
+
+//     req.on('error', (error) => {
+//       reject(new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR));
+//     });
+
+//     req.write(params);
+//     req.end();
+//   });
+// }
 async initializePayment(email: string, amount: number, currency: string, callback_url: string): Promise<any> {
   const params = JSON.stringify({
     email: email,
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
-    callback_url: 'https://kenzyherbals.vercel.app/payment-success' // Include the callback URL here
+    callback_url: callback_url // Correctly include the callback URL here
   });
 
   const options = {
@@ -36,7 +81,8 @@ async initializePayment(email: string, amount: number, currency: string, callbac
       res.on('end', () => {
         const response = JSON.parse(data);
         if (res.statusCode === 200) {
-          resolve(response);
+          // Ensure that the response contains the authorization_url
+          resolve(response.data);
         } else {
           reject(new HttpException(response, res.statusCode));
         }
