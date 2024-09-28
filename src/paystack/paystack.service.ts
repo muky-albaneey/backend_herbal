@@ -11,7 +11,7 @@ async initializePayment(email: string, amount: number, currency: string, callbac
     email: email,
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
-    callback_url: callback_url // Include the callback URL here
+    callback_url: 'https://kenzyherbals.vercel.app/payment-success' // Include the callback URL here
   });
 
   const options = {
