@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, Res, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Req, Res, Headers, Get, Query } from '@nestjs/common';
 import { PaystackService } from './paystack.service';
 import { Request, Response } from 'express';
 import * as crypto from 'crypto';
@@ -60,6 +60,15 @@ async initializePayment(
     } else {
       console.error('Invalid Paystack webhook signature');
       return res.status(400).send('Invalid signature');
+    }
+  }
+  @Get('verify-payment') // Change to GET and use Query
+  async verifyPayment(@Query('reference') reference: string) {
+    try {
+      const response = await this.paystackService.verifyPayment(reference);
+      return { status: 'success', data: response };
+    } catch (error) {
+      return { status: 'error', message: error.message };
     }
   }
 }
