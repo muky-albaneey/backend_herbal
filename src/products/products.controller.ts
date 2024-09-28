@@ -107,45 +107,7 @@ export class ProductController {
     return product;
   }  
 
-  // @Put(':id')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     fileFilter: (req, file, callback) => {
-  //       const ext = path.extname(file.originalname).toLowerCase();
-  //       if (!['.jpeg', '.jpg', '.png', '.gif'].includes(ext)) {
-  //         return callback(new BadRequestException('Invalid image file format'), false);
-  //       }
-  //       callback(null, true);
-  //     },
-  //   }),
-  // )
-  // async updateProduct(
-  //   @Param('id') id: string,
-  //   @UploadedFile() file: Express.Multer.File,
-  //   @Body() createProductDto: CreateProductDto,
-  // ) {
-  //   return await this.productService.updateProductWithImage(id, createProductDto, file);
-  // }
-  // @Patch(':id')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     fileFilter: (req, file, callback) => {
-  //       const ext = path.extname(file.originalname).toLowerCase();
-  //       if (!['.jpeg', '.jpg', '.png', '.gif'].includes(ext)) {
-  //         return callback(new BadRequestException('Invalid image file format'), false);
-  //       }
-  //       callback(null, true);
-  //     },
-  //   }),
-  // )
-  // async patchProduct(
-  //   @Param('id') id: string,
-  //   @UploadedFile() file: Express.Multer.File,
-  //   @Body() updateProductDto: Partial<CreateProductDto>,
-  // ) {
-  //   return await this.productService.patchProductWithImage(id, updateProductDto, file);
-  // }
-  @Patch(':id')
+@Patch(':id')
 @UseInterceptors(
   FileInterceptor('file', {
     fileFilter: (req, file, callback) => {

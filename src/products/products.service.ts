@@ -224,6 +224,40 @@ export class ProductService {
       await this.productRepository.delete(product.id);
     }
   }
+  async deleteProductById(id): Promise<void> {
+    // Find the product by id with its associated image
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: { product_image: true },
+    });
+  
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+  
+    // If the product has an associated image, delete it from Linode Object Storage (optional)
+    if (product.product_image) {
+      try {
+        const deleteParams = {
+          Bucket: this.bucketName,
+          Key: path.basename(product.product_image.url), // Extract the key from the image URL
+        };
+        await this.s3.deleteObject(deleteParams).promise();
+      } catch (error) {
+        console.error(`Error deleting image from Linode: ${error.message}`);
+      }
+  
+      // Delete the image from the database
+      await this.productImageRepository.delete(product.product_image.id);
+    }
+  
+    // Delete the product itself
+    const result = await this.productRepository.delete(id);
+  
+    if (result.affected === 0) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+  }
   
   
 }
