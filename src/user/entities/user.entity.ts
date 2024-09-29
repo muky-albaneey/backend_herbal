@@ -56,6 +56,10 @@ export class User {
     @OneToMany(() => Order, (order) => order.user)
     orders: Order[]; // User's order history
 
+    @OneToOne(() => Address, { cascade: true, nullable: true })
+    @JoinColumn()
+    address?: Address; // One-to-One relationship with Address
+    
     constructor(user: Partial<User>) {
         Object.assign(this, user);
     }
