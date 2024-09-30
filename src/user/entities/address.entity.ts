@@ -35,7 +35,4 @@ export class Address {
   @JoinColumn()
   user: User;  // One-to-One relationship with User
 
-  @OneToOne(() => Product)
-      @JoinColumn()
-      product: Product;  // One-to-One relationship with Product
 }

@@ -230,10 +230,6 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  // async createAddress(createAddressDto: CreateAddressDto): Promise<Address> {
-  //   const address = this.addressRepository.create(createAddressDto);
-  //   return await this.addressRepository.save(address);
-  // }
   async createAddress(createAddressDto: CreateAddressDto, userId) {
     // Find the user by ID to associate the address with
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -242,14 +238,32 @@ export class UserService {
       throw new Error('User not found'); // Handle the case when the user does not exist
     }
   
-    // // Create the address entity with the provided DTO
-    // const address = this.addressRepository.create({
-    //   ...createAddressDto,
-    //   user, // Associate the user with the address
-    // });
+    // Create the address entity with the provided DTO and associate the user
+    const address = this.addressRepository.create({
+      ...createAddressDto,
+      user, // Associate the user with the address
+    });
   
-    // return await this.addressRepository.save(address);
-    return createAddressDto
+    // Save the address entity to the database
+    return await this.addressRepository.save(address);
   }
+  
+  // async createAddress(createAddressDto: CreateAddressDto, userId) {
+  //   // Find the user by ID to associate the address with
+  //   const user = await this.userRepository.findOne({ where: { id: userId } });
+  
+  //   if (!user) {
+  //     throw new Error('User not found'); // Handle the case when the user does not exist
+  //   }
+  
+  //   // // Create the address entity with the provided DTO
+  //   // const address = this.addressRepository.create({
+  //   //   ...createAddressDto,
+  //   //   user, // Associate the user with the address
+  //   // });
+  
+  //   // return await this.addressRepository.save(address);
+  //   return createAddressDto
+  // }
   
 }
