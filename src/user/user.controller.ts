@@ -169,11 +169,7 @@ async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) res
   }
 
 // FORGOT PASSWORD SECTION
-@Post(':id/address')
-  async createAddress(@Param('id', ParseUUIDPipe) id: string, @Body() createAddressDto: CreateAddressDto) {
-    return await this.userService.createAddress(createAddressDto, id);
-  }
-  
+
 @Patch('get_tokens')
 async resetPassword(@Body() userEmail: ForgotPass) {
   return this.userService.getTokens(userEmail)
@@ -201,7 +197,11 @@ async reset(@Body() body: { token: string }) {
     const totalUsers = await this.userService.countUsers();
     return { totalUsers };
   }
-
+  @Post(':id/address')
+  async createAddress(@Param('id', ParseUUIDPipe) id: string, @Body() createAddressDto: CreateAddressDto) {
+    return await this.userService.createAddress(createAddressDto, id);
+  }
+  
   @Get(':id/single_user')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
       return await this.userService.findOne(id);

@@ -22,7 +22,7 @@ export class UserService {
     @InjectRepository(ProfileImage)
     private readonly ProfileBgRepository: Repository<ProfileImage>,
 
-     @InjectRepository(ProfileImage)
+     @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
 
     
