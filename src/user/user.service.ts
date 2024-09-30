@@ -236,11 +236,11 @@ export class UserService {
   // }
   async createAddress(createAddressDto: CreateAddressDto, userId) {
     // Find the user by ID to associate the address with
-    // const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({ where: { id: userId } });
   
-    // if (!user) {
-    //   throw new Error('User not found'); // Handle the case when the user does not exist
-    // }
+    if (!user) {
+      throw new Error('User not found'); // Handle the case when the user does not exist
+    }
   
     // // Create the address entity with the provided DTO
     // const address = this.addressRepository.create({
