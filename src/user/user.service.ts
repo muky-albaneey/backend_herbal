@@ -17,7 +17,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     
-    @InjectRepository(MailService)
+    // @InjectRepository(MailService)
     private readonly emailservice: MailService,
 
     @InjectRepository(ProfileImage)
