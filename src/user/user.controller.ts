@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRole } from './entities/user.entity';
+import { CreateAddressDto } from './dto/create-address.dto';
 
 @Controller('user')
 export class UserController {
@@ -168,7 +169,11 @@ async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) res
   }
 
 // FORGOT PASSWORD SECTION
-
+@Post('address')
+  async createAddress(@Body() createAddressDto: CreateAddressDto) {
+    return await this.userService.createAddress(createAddressDto);
+  }
+  
 @Patch('get_tokens')
 async resetPassword(@Body() userEmail: ForgotPass) {
   return this.userService.getTokens(userEmail)
@@ -221,6 +226,6 @@ async reset(@Body() body: { token: string }) {
     return await this.userService.changeUserRole(userId, newRole);
   }
 
-
+  
 
 }

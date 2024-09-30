@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from 'src/mail/mail.service';
 import * as path from 'path';
 import { ProfileImage } from './entities/profile.entity';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { Address } from './entities/address.entity';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,10 @@ export class UserService {
     @InjectRepository(ProfileImage)
     private readonly ProfileBgRepository: Repository<ProfileImage>,
 
+     @InjectRepository(ProfileImage)
+    private readonly addressRepository: Repository<Address>,
+
+    
     
   ) {}
 
@@ -222,4 +228,10 @@ export class UserService {
     user.role = newRole;
     return await this.userRepository.save(user);
   }
+
+  async createAddress(createAddressDto: CreateAddressDto): Promise<Address> {
+    const address = this.addressRepository.create(createAddressDto);
+    return await this.addressRepository.save(address);
+  }
+
 }

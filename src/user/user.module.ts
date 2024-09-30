@@ -8,6 +8,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
 import { ProfileImage } from './entities/profile.entity';
+import { Address } from './entities/address.entity';
 
 
 @Module({
@@ -25,6 +26,6 @@ import { ProfileImage } from './entities/profile.entity';
   ],
   exports: [TypeOrmModule],
   controllers: [UserController],
-  providers: [JwtService, UserService, MailService],
+  providers: [JwtService, UserService, MailService, Address],
 })
 export class UserModule {}
