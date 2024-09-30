@@ -28,10 +28,11 @@ import { UserService } from 'src/user/user.service';
 import { MailService } from 'src/mail/mail.service';
 import { JwtModule } from '@nestjs/jwt'; // Add this for JwtService
 import { ConfigModule } from '@nestjs/config'; // Add this for ConfigService
+import { Address } from 'src/user/entities/address.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Product, ProductImage, ProfileImage]),
+    TypeOrmModule.forFeature([User, Product, ProductImage, ProfileImage, Address]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'defaultSecret', // Use your JWT secret
       signOptions: { expiresIn: '60s' }, // Set token expiration
