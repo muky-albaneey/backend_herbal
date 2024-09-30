@@ -248,7 +248,7 @@ export class UserService {
   //   return await this.addressRepository.save(address);
   // }
 
-  async createAddress(createAddressDto: CreateAddressDto, userId: string) {
+  async createAddress(createAddressDto: CreateAddressDto, userId) {
     // Find the user by ID to associate the address with
     const user = await this.userRepository.findOne({ where: { id: userId } });
   
