@@ -28,7 +28,7 @@ export class Address {
   email: string;  // Store the file extension
 
   @Column()
-  City: string; 
+  city: string; 
 
    // Add the One-to-One relationship with User
   @OneToOne(() => User, (user) => user.address)
