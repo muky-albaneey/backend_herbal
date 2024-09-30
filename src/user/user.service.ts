@@ -234,21 +234,22 @@ export class UserService {
   //   const address = this.addressRepository.create(createAddressDto);
   //   return await this.addressRepository.save(address);
   // }
-  async createAddress(createAddressDto: CreateAddressDto, userId): Promise<Address> {
+  async createAddress(createAddressDto: CreateAddressDto, userId) {
     // Find the user by ID to associate the address with
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    // const user = await this.userRepository.findOne({ where: { id: userId } });
   
-    if (!user) {
-      throw new Error('User not found'); // Handle the case when the user does not exist
-    }
+    // if (!user) {
+    //   throw new Error('User not found'); // Handle the case when the user does not exist
+    // }
   
-    // Create the address entity with the provided DTO
-    const address = this.addressRepository.create({
-      ...createAddressDto,
-      user, // Associate the user with the address
-    });
+    // // Create the address entity with the provided DTO
+    // const address = this.addressRepository.create({
+    //   ...createAddressDto,
+    //   user, // Associate the user with the address
+    // });
   
-    return await this.addressRepository.save(address);
+    // return await this.addressRepository.save(address);
+    return createAddressDto
   }
   
 }
