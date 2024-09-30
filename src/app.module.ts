@@ -13,6 +13,7 @@ import { ProductImage } from './user/entities/product_img.entity';
 import { Product } from './user/entities/product.entity';
 import { OrderModule } from './order/order.module';
 import { Order } from './user/entities/order.entity';
+import { Address } from './user/entities/address.entity';
 
 
 @Module({
@@ -31,7 +32,7 @@ import { Order } from './user/entities/order.entity';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User,  ProductImage, Product, ProfileImage, Order],
+        entities: [User,  ProductImage, Product, ProfileImage, Order, Address],
         synchronize: true, 
         ssl: {
           rejectUnauthorized: false,
