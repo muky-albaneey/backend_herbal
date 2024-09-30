@@ -169,9 +169,9 @@ async login(@Body() createAuthDto: LoginAuthDto, @Res({ passthrough: true }) res
   }
 
 // FORGOT PASSWORD SECTION
-@Post('address')
-  async createAddress(@Body() createAddressDto: CreateAddressDto) {
-    return await this.userService.createAddress(createAddressDto);
+@Post(':id/address')
+  async createAddress(@Param('id', ParseUUIDPipe) id: string, @Body() createAddressDto: CreateAddressDto) {
+    return await this.userService.createAddress(createAddressDto, id);
   }
   
 @Patch('get_tokens')
