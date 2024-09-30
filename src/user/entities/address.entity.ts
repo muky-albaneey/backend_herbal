@@ -7,6 +7,9 @@ export class Address {
   id: string;
 
   @Column()
+  firstName: string;
+
+  @Column()
   lastName: string;
 
   @Column()

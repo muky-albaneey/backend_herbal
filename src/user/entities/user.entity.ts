@@ -10,6 +10,7 @@ import {
 import { ProfileImage } from './profile.entity';
 import { Product } from './product.entity';
 import { Order } from './order.entity';
+import { Address } from './address.entity';
 
 export enum UserRole {
     ADMIN = "admin",
