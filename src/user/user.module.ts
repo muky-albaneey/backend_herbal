@@ -13,7 +13,7 @@ import { Address } from './entities/address.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, ProfileImage]),
+    TypeOrmModule.forFeature([User, ProfileImage, Address]),
     ConfigModule, // Ensure ConfigModule is imported
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -26,6 +26,6 @@ import { Address } from './entities/address.entity';
   ],
   exports: [TypeOrmModule],
   controllers: [UserController],
-  providers: [JwtService, UserService, MailService, Address],
+  providers: [JwtService, UserService, MailService],
 })
 export class UserModule {}
