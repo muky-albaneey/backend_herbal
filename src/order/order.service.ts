@@ -22,7 +22,7 @@ export class OrderService {
   async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['address'], // Load the user's address
+      relations: ['address'], // Load the user's address if needed
     });
   
     if (!user) {
@@ -45,21 +45,33 @@ export class OrderService {
     const savedOrder = await this.orderRepository.save(order);
   
     // Now create CartItem instances with the order ID
-    const cartItems = await Promise.all(
+    await Promise.all(
       createOrderDto.items.map(async (itemDto) => {
         const cartItem = new CartItem();
         cartItem.name = itemDto.name;
         cartItem.price = itemDto.price;
         cartItem.quantity = itemDto.quantity;
         cartItem.order = savedOrder; // Associate the cart item with the order
-        return this.cartItemRepository.save(cartItem);
+        await this.cartItemRepository.save(cartItem);
       })
     );
   
-    // Attach saved cart items to the order (if needed)
-    savedOrder.items = cartItems; 
+    // Optionally, if you want to return the order with cart items
+    savedOrder.items = await this.cartItemRepository.find({
+      where: { order: savedOrder },
+    });
   
-    return savedOrder; // Return the saved order with associated cart items
+    // Return the saved order, omitting circular references
+    const { items, ...orderResponse } = savedOrder;
+    return {
+      ...orderResponse,
+      items: items.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    };
   }
   
   

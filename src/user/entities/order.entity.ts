@@ -1,8 +1,8 @@
 
-// import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-// import { User } from './user.entity';
-// import { CartItem } from './cart-item.entity';
-// import { Address } from './address.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { User } from './user.entity';
+import { CartItem } from './cart-item.entity';
+import { Address } from './address.entity';
 
 // @Entity()
 // export class Order {
@@ -33,10 +33,7 @@
 //     Object.assign(this, order);
 //   }
 // }
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { User } from './user.entity';
-import { CartItem } from './cart-item.entity';
-import { Address } from './address.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Order {
@@ -48,7 +45,8 @@ export class Order {
   user: User;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.order, { cascade: true })
-  items: CartItem[]; // Define OneToMany relationship with CartItem
+  @Exclude() // Exclude to prevent circular reference
+  items: CartItem[];
 
   @Column({ type: 'decimal', nullable: false })
   totalAmount: number;
@@ -66,5 +64,6 @@ export class Order {
   constructor(order?: Partial<Order>) {
     Object.assign(this, order);
   }
-  
 }
+
+
