@@ -1,32 +1,24 @@
-// import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
-// import { OrderService } from './order.service';
-// import { CreateOrderDto } from './dto/create-order.dto';
-// import { JwtGuard } from 'src/guards/jwt.guard';
-
-// @Controller('orders')
-// export class OrderController {
-//   constructor(private readonly orderService: OrderService) {}
-
-//   @UseGuards(JwtGuard)
-//   @Post()
-//   async createOrder(@Body() createOrderDto: CreateOrderDto, @Req() req): Promise<any> {
-//     const user = req.user; // The authenticated user
-//     const order = await this.orderService.createOrder(createOrderDto, user);
-//     return order;
-//   }
-// }
-import { Controller, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Body, Param, ParseUUIDPipe, Res, HttpStatus } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import type { Response } from 'express';
+
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post(':id')
-  async createOrder(@Body() createOrderDto, @Param('id', ParseUUIDPipe) id: string) {
+  async createOrder(@Body() createOrderDto, @Param('id', ParseUUIDPipe) id: string, @Res({ passthrough: true }) response: Response) {
     console.log(createOrderDto)
-    return createOrderDto
-    // return this.orderService.createOrder(createOrderDto);
+    // return createOrderDto
+    const result = this.orderService.createOrder(createOrderDto, id);
+
+    return response.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      message: ' address info',
+      data: result,
+    
+    });
   }
 }
