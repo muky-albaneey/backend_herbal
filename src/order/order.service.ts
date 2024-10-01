@@ -71,7 +71,7 @@ export class OrderService {
 
   //   return order; // Return the created order with items
   // }
-  async createOrder(createOrderDto: CreateOrderDto, userId: string): Promise<Order> {
+  async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
     // Fetch the user to attach to the order
     const user = await this.userRepository.findOne({
       where: { id: userId },
