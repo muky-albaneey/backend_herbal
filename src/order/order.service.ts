@@ -20,7 +20,6 @@ export class OrderService {
     private readonly userRepository: Repository<User>
   ) {}
   async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
-    // Fetch the user to attach to the order
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['address'], // Load the user's address
@@ -30,40 +29,39 @@ export class OrderService {
       throw new NotFoundException('User not found');
     }
   
-    // Calculate totalAmount and deliveryFee based on the user's address
     const totalAmount = createOrderDto.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-    const deliveryFee = user.address?.country === 'Nigeria' ? 0 : 1000; // Example delivery fee
+    const deliveryFee = user.address?.country === 'Nigeria' ? 0 : 1000;
   
-    // Now create the order and save it
+    // Create the order first
     const order = new Order();
-    order.user = user; // Attach user to the order
-    order.totalAmount = totalAmount; // Set total amount
-    order.deliveryFee = deliveryFee; // Set delivery fee
+    order.user = user;
+    order.totalAmount = totalAmount;
+    order.deliveryFee = deliveryFee;
   
-    // First, save the order to get its id
+    // Save the order to generate an order ID
     const savedOrder = await this.orderRepository.save(order);
   
-    // Create CartItem instances and associate them with the saved order
+    // Now create CartItem instances with the order ID
     const cartItems = await Promise.all(
       createOrderDto.items.map(async (itemDto) => {
         const cartItem = new CartItem();
         cartItem.name = itemDto.name;
         cartItem.price = itemDto.price;
         cartItem.quantity = itemDto.quantity;
-        cartItem.order = savedOrder; // Associate the cart item with the saved order
-        return this.cartItemRepository.save(cartItem); // Save each CartItem to the database
+        cartItem.order = savedOrder; // Associate the cart item with the order
+        return this.cartItemRepository.save(cartItem);
       })
     );
   
-    // Attach the saved cart items to the order (optional)
-    savedOrder.items = cartItems;
+    // Attach saved cart items to the order (if needed)
+    savedOrder.items = cartItems; 
   
-    // Return the saved order (with items)
-    return savedOrder;
+    return savedOrder; // Return the saved order with associated cart items
   }
+  
   
   // async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
   //   // Fetch the user to attach to the order
