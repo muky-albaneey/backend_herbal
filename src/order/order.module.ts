@@ -8,7 +8,7 @@ import { CartItem } from 'src/user/entities/cart-item.entity';
 import { Address } from 'src/user/entities/address.entity';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([User, Order, , Address])],
+  imports : [TypeOrmModule.forFeature([User, Order,CartItem , Address])],
   providers: [OrderService],
   controllers: [OrderController]
 })
