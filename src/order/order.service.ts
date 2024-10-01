@@ -29,6 +29,7 @@ export class OrderService {
       throw new NotFoundException('User not found');
     }
   
+    // Calculate total amount and delivery fee
     const totalAmount = createOrderDto.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -44,7 +45,7 @@ export class OrderService {
     // Save the order to generate an order ID
     const savedOrder = await this.orderRepository.save(order);
   
-    // Now create CartItem instances with the order ID
+    // Create CartItem instances with the order reference
     await Promise.all(
       createOrderDto.items.map(async (itemDto) => {
         const cartItem = new CartItem();
@@ -52,27 +53,20 @@ export class OrderService {
         cartItem.price = itemDto.price;
         cartItem.quantity = itemDto.quantity;
         cartItem.order = savedOrder; // Associate the cart item with the order
-        await this.cartItemRepository.save(cartItem);
+        return this.cartItemRepository.save(cartItem);
       })
     );
   
-    // Optionally, if you want to return the order with cart items
-    savedOrder.items = await this.cartItemRepository.find({
-      where: { order: savedOrder },
+    // Load the saved order with its items
+    const orderWithItems = await this.orderRepository.findOne({
+      where: { id: savedOrder.id },
+      relations: ['items'],
     });
   
-    // Return the saved order, omitting circular references
-    const { items, ...orderResponse } = savedOrder;
-    return {
-      ...orderResponse,
-      items: items.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-    };
+    return orderWithItems; // This will return the order with the correct CartItem references
   }
+  
+
   
   
   // async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
