@@ -81,5 +81,18 @@ export class OrderService {
     });
   }
   
+  async getOrderById(orderId): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['user', 'user.address', 'items'], // Load user, user's address, and cart items for the order
+    });
+  
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+  
+    return order;
+  }
+  
   
 }

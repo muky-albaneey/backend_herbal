@@ -35,4 +35,9 @@ export class OrderController {
   async findAll(): Promise<Order[]> {
     return await this.orderService.getAllOrders();
   }
+
+  @Get(':id')
+  async getOrder(@Param('id') id: number): Promise<Order> {
+    return this.orderService.getOrderById(id);
+  }
 }
