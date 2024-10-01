@@ -142,22 +142,41 @@ export class UserService {
     return userValidate;
   }
 
-
-  async findOne(id){
-  
+  async findOne(id) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: { profile_image: true}      // relations: {profile_bg: true, profile_image : true},
+      relations: [
+        'profile_image',
+        'products',
+        'orders',
+        'address',
+      ],
     });
-    
+  
     console.log("User found: ", user);
   
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
     return user;
   }
+  
+  // async findOne(id){
+  
+  //   const user = await this.userRepository.findOne({
+  //     where: { id },
+  //     relations: { profile_image: true}      // relations: {profile_bg: true, profile_image : true},
+  //   });
+    
+  //   console.log("User found: ", user);
+  
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+
+  //   return user;
+  // }
   
   async findAll() {
     const user = await this.userRepository.find({      

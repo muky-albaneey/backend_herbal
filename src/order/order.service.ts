@@ -67,10 +67,19 @@ export class OrderService {
   }
   
 
+  // async getAllOrders(): Promise<Order[]> {
+  //   return await this.orderRepository.find({
+  //     relations: ['user', 'items', 'address'], // Load user, cart items, and address for each order
+  //   });
+  // }
   async getAllOrders(): Promise<Order[]> {
     return await this.orderRepository.find({
-      relations: ['user', 'items', 'address'], // Load user, cart items, and address for each order
+      relations: ['user', 'user.address', 'items'], // Load user, user's address, and cart items for each order
+      order: {
+        createdAt: 'DESC', // Adjust this to the actual field name for your created date
+      },
     });
   }
+  
   
 }
