@@ -14,6 +14,7 @@ import { Product } from './user/entities/product.entity';
 import { OrderModule } from './order/order.module';
 import { Order } from './user/entities/order.entity';
 import { Address } from './user/entities/address.entity';
+import { CartItem } from './user/entities/cart-item.entity';
 
 
 @Module({
@@ -32,7 +33,7 @@ import { Address } from './user/entities/address.entity';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User,  ProductImage, Product, ProfileImage, Order, Address],
+        entities: [User,  ProductImage, Product, ProfileImage, Order, Address, CartItem],
         synchronize: true, 
         ssl: {
           rejectUnauthorized: false,
