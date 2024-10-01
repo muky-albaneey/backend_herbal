@@ -24,7 +24,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post(':id')
-  async createOrder(@Body() createOrderDto: CreateOrderDto, @Param('id', ParseUUIDPipe)) {
+  async createOrder(@Body() createOrderDto: CreateOrderDto, @Param('id', ParseUUIDPipe) id: string) {
     console.log(createOrderDto)
     // return this.orderService.createOrder(createOrderDto);
   }
