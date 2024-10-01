@@ -69,7 +69,7 @@ export class OrderService {
 
   async getAllOrders(): Promise<Order[]> {
     return await this.orderRepository.find({
-      relations: ['user', 'items'], // Load user and cart items for each order
+      relations: ['user', 'items', 'address'], // Load user, cart items, and address for each order
     });
   }
   
