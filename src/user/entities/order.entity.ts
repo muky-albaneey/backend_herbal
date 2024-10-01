@@ -1,8 +1,8 @@
+
 // import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 // import { User } from './user.entity';
 // import { CartItem } from './cart-item.entity';
-
-
+// import { Address } from './address.entity';
 
 // @Entity()
 // export class Order {
@@ -22,6 +22,10 @@
 //   @Column({ type: 'decimal', nullable: false })
 //   deliveryFee: number; // Delivery fee
 
+//   @ManyToOne(() => Address, { nullable: true }) // Add the address relationship
+//   @JoinColumn()
+//   address: Address; // Address for delivery
+
 //   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 //   createdAt: Date; // Date of purchase
 
@@ -29,7 +33,7 @@
 //     Object.assign(this, order);
 //   }
 // }
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from './user.entity';
 import { CartItem } from './cart-item.entity';
 import { Address } from './address.entity';
@@ -43,23 +47,24 @@ export class Order {
   @JoinColumn()
   user: User;
 
-  @Column({ type: 'json', nullable: false })
-  items: CartItem[]; // Store the cart items as JSON
+  @OneToMany(() => CartItem, (cartItem) => cartItem.order, { cascade: true })
+  items: CartItem[]; // Define OneToMany relationship with CartItem
 
   @Column({ type: 'decimal', nullable: false })
-  totalAmount: number; // Total order amount
+  totalAmount: number;
 
   @Column({ type: 'decimal', nullable: false })
-  deliveryFee: number; // Delivery fee
+  deliveryFee: number;
 
-  @ManyToOne(() => Address, { nullable: true }) // Add the address relationship
+  @ManyToOne(() => Address, { nullable: true })
   @JoinColumn()
-  address: Address; // Address for delivery
+  address: Address;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date; // Date of purchase
+  createdAt: Date;
 
-  constructor(order: Partial<Order>) {
+  constructor(order?: Partial<Order>) {
     Object.assign(this, order);
   }
+  
 }
