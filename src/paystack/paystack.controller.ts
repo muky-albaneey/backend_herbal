@@ -41,7 +41,7 @@ async initializePayment(
       const event = req.body;
 
       // Log the event for debugging
-      console.log('Received Paystack webhook event:', event);
+      // console.log('Received Paystack webhook event:', event);
 
       // Handle specific events like payment success
       switch (event.event) {
@@ -58,7 +58,7 @@ async initializePayment(
 
       return res.status(200).send('Webhook received successfully');
     } else {
-      console.error('Invalid Paystack webhook signature');
+      // console.error('Invalid Paystack webhook signature');
       return res.status(400).send('Invalid signature');
     }
   }
@@ -69,7 +69,7 @@ async initializePayment(
       const response = await this.paystackService.verifyPayment(reference);
       return { status: 'success', data: response };
     } catch (error) {
-      console.error('Payment verification error:', error.message);
+      // console.error('Payment verification error:', error.message);
       return { status: 'error', message: error.message };
     }
   }

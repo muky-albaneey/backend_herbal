@@ -54,8 +54,8 @@ export class UserService {
 
       return { user: userSaved };
     } catch (error) {
-      console.error('User creation failed', error);
-      console.error('User creation failed', error);
+      // console.error('User creation failed', error);
+      // console.error('User creation failed', error);
       throw error;
     }
   }
@@ -77,7 +77,7 @@ export class UserService {
 
       return userValidate;
     } catch (error) {
-      console.error('User login failed', error);
+      // console.error('User login failed', error);
       throw error;
     }
   }
@@ -122,7 +122,7 @@ export class UserService {
   }
 
   async changePassword(tokenNum: string, newPassword: string) {
-    console.log('Changing password for token:', tokenNum);
+    // console.log('Changing password for token:', tokenNum);
 
     const userValidate = await this.userRepository.findOne({
       where: { rememberToken: tokenNum },
@@ -132,13 +132,13 @@ export class UserService {
       throw new UnauthorizedException('The tokens are incorrect!');
     }
 
-    console.log('User found for password change:', userValidate);
+    // console.log('User found for password change:', userValidate);
 
     userValidate.password = await this.hashPassword(newPassword);
     userValidate.rememberToken = ''; // Clear token after successful password change
     await this.userRepository.save(userValidate);
 
-    console.log('Password changed and token cleared for user:', userValidate);
+    // console.log('Password changed and token cleared for user:', userValidate);
     return userValidate;
   }
 
@@ -229,24 +229,6 @@ export class UserService {
     user.role = newRole;
     return await this.userRepository.save(user);
   }
-
-  // async createAddress(createAddressDto: CreateAddressDto, userId) {
-  //   // Find the user by ID to associate the address with
-  //   const user = await this.userRepository.findOne({ where: { id: userId } });
-  
-  //   if (!user) {
-  //     throw new Error('User not found'); // Handle the case when the user does not exist
-  //   }
-  
-  //   // Create the address entity with the provided DTO and associate the user
-  //   const address = this.addressRepository.create({
-  //     ...createAddressDto,
-  //     user, // Associate the user with the address
-  //   });
-  
-  //   // Save the address entity to the database
-  //   return await this.addressRepository.save(address);
-  // }
 
   async createAddress(createAddressDto: CreateAddressDto, userId) {
     // Find the user by ID to associate the address with
