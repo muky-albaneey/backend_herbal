@@ -45,6 +45,7 @@ export class OrderController {
         data: result,
       });
     } catch (error) {
+      console.error('Error creating order:', error);  // Log the error details
       return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to create order',
