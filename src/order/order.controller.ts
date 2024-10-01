@@ -1,31 +1,8 @@
-// import { Controller, Post, Body, Param, ParseUUIDPipe, Res, HttpStatus } from '@nestjs/common';
-// import { OrderService } from './order.service';
-// import { CreateOrderDto } from './dto/create-order.dto';
-// import type { Response } from 'express';
-
-
-// @Controller('orders')
-// export class OrderController {
-//   constructor(private readonly orderService: OrderService) {}
-
-//   @Post(':id')
-//   async createOrder(@Body() createOrderDto, @Param('id', ParseUUIDPipe) id: string, @Res({ passthrough: true }) response: Response) {
-//     console.log(createOrderDto)
-//     // return createOrderDto
-//     const result = this.orderService.createOrder(createOrderDto, id);
-
-//     return response.status(HttpStatus.OK).json({
-//       statusCode: HttpStatus.OK,
-//       message: ' address info',
-//       data: result,
-    
-//     });
-//   }
-// }
-import { Controller, Post, Body, Param, ParseUUIDPipe, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Param, ParseUUIDPipe, Res, HttpStatus, Get } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import type { Response } from 'express';
+import { Order } from 'src/user/entities/order.entity';
 
 @Controller('orders')
 export class OrderController {
@@ -52,5 +29,10 @@ export class OrderController {
         error: error.message,
       });
     }
+  }
+
+  @Get()
+  async findAll(): Promise<Order[]> {
+    return await this.orderService.getAllOrders();
   }
 }

@@ -67,46 +67,10 @@ export class OrderService {
   }
   
 
-  
-  
-  // async createOrder(createOrderDto: CreateOrderDto, userId): Promise<Order> {
-  //   // Fetch the user to attach to the order
-  //   const user = await this.userRepository.findOne({
-  //     where: { id: userId },
-  //     relations: ['address'], // Load the user's address
-  //   });
-  
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-  
-  //   // Calculate totalAmount and deliveryFee based on the user's address
-  //   const totalAmount = createOrderDto.items.reduce(
-  //     (sum, item) => sum + item.price * item.quantity,
-  //     0
-  //   );
-  //   const deliveryFee = user.address?.country === 'Nigeria' ? 0 : 1000; // Example delivery fee
-  
-  //   // Create and save CartItem instances before saving the order
-  //   const cartItems = await Promise.all(
-  //     createOrderDto.items.map(async (itemDto) => {
-  //       const cartItem = new CartItem();
-  //       cartItem.name = itemDto.name;
-  //       cartItem.price = itemDto.price;
-  //       cartItem.quantity = itemDto.quantity;
-  //       return this.cartItemRepository.save(cartItem); // Save each CartItem to the database
-  //     })
-  //   );
-  
-  //   // Now create the order and associate it with cartItems and the user
-  //   const order = new Order();
-  //   order.user = user; // Attach user to the order
-  //   order.totalAmount = totalAmount; // Set total amount
-  //   order.deliveryFee = deliveryFee; // Set delivery fee
-  //   order.items = cartItems; // Attach the saved cart items to the order
-  
-  //   // Save the order with its items
-  //   return await this.orderRepository.save(order);
-  // }
+  async getAllOrders(): Promise<Order[]> {
+    return await this.orderRepository.find({
+      relations: ['user', 'items'], // Load user and cart items for each order
+    });
+  }
   
 }
