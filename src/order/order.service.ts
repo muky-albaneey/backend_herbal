@@ -66,12 +66,6 @@ export class OrderService {
     return orderWithItems; // This will return the order with the correct CartItem references
   }
   
-
-  // async getAllOrders(): Promise<Order[]> {
-  //   return await this.orderRepository.find({
-  //     relations: ['user', 'items', 'address'], // Load user, cart items, and address for each order
-  //   });
-  // }
   async getAllOrders(): Promise<Order[]> {
     return await this.orderRepository.find({
       relations: ['user', 'user.address', 'items'], // Load user, user's address, and cart items for each order
@@ -80,7 +74,7 @@ export class OrderService {
       },
     });
   }
-  
+
   async getOrderById(orderId): Promise<Order> {
     const order = await this.orderRepository.findOne({
       where: { id: orderId },
@@ -94,5 +88,19 @@ export class OrderService {
     return order;
   }
   
-  
+
+  async deleteOrderById(orderId): Promise<void> {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+    });
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+    await this.orderRepository.delete(orderId); // Delete the order
+  }
+
+  // Delete all orders
+  async deleteAllOrders(): Promise<void> {
+    await this.orderRepository.clear(); // This deletes all rows from the order table
+  }
 }
