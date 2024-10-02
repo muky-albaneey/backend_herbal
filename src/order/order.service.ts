@@ -103,4 +103,8 @@ export class OrderService {
   async deleteAllOrders(): Promise<void> {
     await this.orderRepository.clear(); // This deletes all rows from the order table
   }
+
+  async countOrders(): Promise<number> {
+    return await this.orderRepository.count(); // Returns the total number of orders
+  }
 }

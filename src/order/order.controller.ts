@@ -35,7 +35,24 @@ export class OrderController {
   async findAll(): Promise<Order[]> {
     return await this.orderService.getAllOrders();
   }
-
+  @Get('count')
+  async countOrders(@Res({ passthrough: true }) response: Response) {
+    try {
+      const orderCount = await this.orderService.countOrders();
+      return response.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'Order count retrieved successfully',
+        data: { count: orderCount },
+      });
+    } catch (error) {
+      console.error('Error counting orders:', error);  // Log the error details
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to retrieve order count',
+        error: error.message,
+      });
+    }
+  }
   @Get(':id')
   async getOrder(@Param('id') id: string): Promise<Order> {
     return this.orderService.getOrderById(id);
