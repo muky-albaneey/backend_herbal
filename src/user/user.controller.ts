@@ -8,6 +8,7 @@ import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRole } from './entities/user.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -215,16 +216,36 @@ async reset(@Body() body: { token: string }) {
       return await this.userService.findOne(id);
     }
     
-  @Patch(':id/profileImg')
-  @UseInterceptors(FileInterceptor ('profile'))
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async uploadProfile(@Param('id', ParseUUIDPipe) id: string, @UploadedFile() file: Express.Multer.File) {
-  // async createProfileImg(@Param('id', ParseUUIDPipe) id: string, @Body() createFileDto) {  
+    @Patch('update/:id')
+    async updateUser(
+      @Param('id', ParseUUIDPipe) id: string, 
+      @Body() updateUserDto: UpdateUserDto, 
+      @Res() response: Response
+    ): Promise<any> {
+      try {
+        const updatedUser = await this.userService.updateUser(id, updateUserDto);
+        return response.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          message: 'User updated successfully',
+          data: updatedUser,
+        });
+      } catch (error) {
+        return response.status(HttpStatus.BAD_REQUEST).json({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: error.message,
+        });
+      }
+    }
+  // @Patch(':id/profileImg')
+  // @UseInterceptors(FileInterceptor ('profile'))
+  // @UsePipes(new ValidationPipe({ transform: true }))
+  // async uploadProfile(@Param('id', ParseUUIDPipe) id: string, @UploadedFile() file: Express.Multer.File) {
+  // // async createProfileImg(@Param('id', ParseUUIDPipe) id: string, @Body() createFileDto) {  
     
-    const result = await this.userService.updateProfileBg(id, file); 
-    console.log(result)
-    return result;
-  }
+  //   const result = await this.userService.updateProfileBg(id, file); 
+  //   console.log(result)
+  //   return result;
+  // }
 
   @Patch(':id/role')
   async changeUserRole(

@@ -10,9 +10,15 @@ import * as path from 'path';
 import { ProfileImage } from './entities/profile.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { Address } from './entities/address.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as AWS from 'aws-sdk';
 
 @Injectable()
 export class UserService {
+
+  private s3: AWS.S3;
+  private bucketName: string;
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -21,14 +27,23 @@ export class UserService {
     private readonly emailservice: MailService,
 
     @InjectRepository(ProfileImage)
-    private readonly ProfileBgRepository: Repository<ProfileImage>,
+    private readonly profileImageRepository: Repository<ProfileImage>,
 
      @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
 
+    // @InjectRepository(ProfileImage) private profileImageRepository: Repository<ProfileImage>,
     
-    
-  ) {}
+  ) {
+    this.s3 = new AWS.S3({
+      endpoint: process.env.LINODE_BUCKET_ENDPOINT,
+      accessKeyId: process.env.LINODE_ACCESS_KEY,
+      secretAccessKey: process.env.LINODE_SECRET_KEY,
+      region: process.env.LINODE_BUCKET_REGION,
+      s3ForcePathStyle: true,
+    });
+    this.bucketName = process.env.LINODE_BUCKET_NAME;
+  }
 
   private async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
@@ -162,69 +177,90 @@ export class UserService {
     return user;
   }
   
-  // async findOne(id){
-  
-  //   const user = await this.userRepository.findOne({
-  //     where: { id },
-  //     relations: { profile_image: true}      // relations: {profile_bg: true, profile_image : true},
-  //   });
-    
-  //   console.log("User found: ", user);
-  
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-
-  //   return user;
-  // }
-  
   async findAll() {
     const user = await this.userRepository.find({      
       relations: { profile_image: true}     });
     return user
   }
 
-  
-  async updateProfileBg(id, image: { originalname: string, buffer: Buffer }): Promise<User> {
-    // Check if the user exists    
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: { profile_image: true}       // relations: {profile_bg: true, profile_image : true},
-    });
-    
-    
+  async updateUser(id, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
-    // Validate image file format
-    if (!['.jpeg', '.png', '.gif', '.jpg', '.avif'].includes(path.extname(image.originalname).toLowerCase())) {
-      throw new BadRequestException('Invalid image file format');
+
+    // Update the user entity with new data
+    Object.assign(user, updateUserDto);
+
+    // Save the updated user entity
+    return await this.userRepository.save(user);
+  }
+
+  async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
+    const params = {
+      Bucket: this.bucketName,
+      Key: `${Date.now()}-${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: 'public-read',
+    };
+
+    try {
+      const uploadResult = await this.s3.upload(params).promise();
+      return uploadResult.Location;
+    } catch (error) {
+      throw new BadRequestException('Error uploading file to Linode Object Storage');
     }
-  
-    if (user.profile_image) {
-      // Update existing profile background entity
-      user.profile_image.name = image.originalname;
-      // user.profile_image.content = image.buffer;
-      user.profile_image.ext = path.extname(image.originalname).toLowerCase().slice(1).trim();
-      user.profile_image.base64 = image.buffer.toString('base64');
-  
-      // Save the updated profile background entity to the database
-      await this.ProfileBgRepository.save(user.profile_image);
-    } else {
-      // Create new profile background entity
-      const newProfileBg = new ProfileImage({
-        name: image.originalname,
-        // content: image.buffer,
-        ext: path.extname(image.originalname).toLowerCase().slice(1).trim(),
-        base64: image.buffer.toString('base64'),
+  }
+
+  // Patch request to update user's profile image
+  async patchUserProfileImage(
+    userId: string,
+    file: Express.Multer.File,
+  ): Promise<User> {
+    // Find the user by ID
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: { profile_image: true } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Upload new file if provided
+    let newProfileImage: ProfileImage;
+    if (file) {
+      const fileUrl = await this.uploadFileToLinode(file);
+      newProfileImage = this.profileImageRepository.create({
+        name: file.originalname,
+        url: fileUrl,
+        ext: path.extname(file.originalname).slice(1),
       });
-  
-      // Save the new profile background entity to the database
-      user.profile_image = await this.ProfileBgRepository.save(newProfileBg);
+
+      // Save the new profile image
+      newProfileImage = await this.profileImageRepository.save(newProfileImage);
     }
-  
-    // Save the updated user entity to the database
+
+    // If user already has an image, delete the old one from S3 and database
+    if (user.profile_image) {
+      try {
+        const deleteParams = {
+          Bucket: this.bucketName,
+          Key: path.basename(user.profile_image.url),
+        };
+        await this.s3.deleteObject(deleteParams).promise();
+      } catch (error) {
+        console.error(`Error deleting old image from Linode: ${error.message}`);
+      }
+
+      // Delete old profile image from the database
+      await this.profileImageRepository.delete(user.profile_image.id);
+    }
+
+    // Assign new profile image to user
+    if (newProfileImage) {
+      user.profile_image = newProfileImage;
+    }
+
+    // Save and return updated user
     return await this.userRepository.save(user);
   }
 
