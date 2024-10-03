@@ -183,7 +183,7 @@ export class UserService {
       .leftJoinAndSelect('user.products', 'products')
       .leftJoinAndSelect('user.orders', 'orders')
       .leftJoinAndSelect('user.address', 'address')
-      .orderBy('orders.created_at', 'DESC') // Order orders by created_at descending
+      .orderBy('orders.createdAt', 'DESC') // Order orders by created_at descending
       .where('user.id = :id', { id })
       .getOne();
   
