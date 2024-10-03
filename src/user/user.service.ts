@@ -238,7 +238,7 @@ export class UserService {
       // Save the new profile image
       newProfileImage = await this.profileImageRepository.save(newProfileImage);
     }
-
+ 
     // If user already has an image, delete the old one from S3 and database
     if (user.profile_image) {
       try {
