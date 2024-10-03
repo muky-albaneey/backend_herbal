@@ -216,7 +216,7 @@ export class UserService {
 
   // Patch request to update user's profile image
   async patchUserProfileImage(
-    userId: string,
+    userId,
     file: Express.Multer.File,
   ): Promise<User> {
     // Find the user by ID
