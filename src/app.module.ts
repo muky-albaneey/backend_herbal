@@ -38,7 +38,7 @@ import { CartItem } from './user/entities/cart-item.entity';
         ssl: {
           rejectUnauthorized: false,
         },
-        migrations: ['src/migrations/*.ts'],
+         migrations: ['dist/migrations/*.js', 'src/migrations/*.ts'], 
       }),
     }),
     UserModule,

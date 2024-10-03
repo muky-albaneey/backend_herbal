@@ -1,21 +1,26 @@
 /* eslint-disable prettier/prettier */
 import {PrimaryGeneratedColumn, Column } from 'typeorm';
 
+
 export class AbstractFileEntity<T> {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @Column()
+    id: number;
+  
+    @Column({ type: 'varchar', length: 255, nullable: true })
     name: string;
   
-    @Column()
-    url: string;  // Store the URL of the uploaded file
+    @Column({ type: 'varchar',  nullable: true })
+    base64: string;
   
-    @Column()
-    ext: string;  // Store the file extension
+    @Column({ nullable: true, type: 'bytea' })
+    content: Buffer;
   
+    @Column({ type: 'varchar', length: 10, nullable: true })
+    ext: string;
+
+
     constructor(entity : Partial<T>){
-        Object.assign(this, entity);
+        Object.assign(this, entity)
     }
 }
