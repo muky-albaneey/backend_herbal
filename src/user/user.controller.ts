@@ -198,10 +198,10 @@ async reset(@Body() body: { token: string }) {
     const totalUsers = await this.userService.countUsers();
     return { totalUsers };
   }
-  @Post(':id/address')
+  @Post('address')
   async createAddress(@Param('id', ParseUUIDPipe) id: string, @Body() createAddressDto: CreateAddressDto, 
   @Res({ passthrough: true }) response: Response) {
-    const result = await this.userService.createAddress(createAddressDto, id);
+    const result = await this.userService.createAddress(createAddressDto);
 
     return response.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,

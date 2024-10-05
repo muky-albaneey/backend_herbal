@@ -219,12 +219,24 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async createAddress(createAddressDto: CreateAddressDto, userId) {
-    // Find the user by ID to associate the address with
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-  
+  async createAddress(createAddressDto: CreateAddressDto) {
+    // Try to find the user by ID to associate the address with
+    // let user = await this.userRepository.findOne({ where: { id: userId } });
+    let user = await this.userRepository.findOne({ where: { email: createAddressDto.email} });
+    // If the user is not found, create a new user
     if (!user) {
-      throw new Error('User not found'); // Handle the case when the user does not exist
+      const staticPassword = 'kenzy12345'; // Static password
+  
+      // Create a new user using email and static password
+      const newUserDto: CreateAuthDto = {
+        full_name: createAddressDto.firstName + ' ' + createAddressDto.lastName, // Example of constructing the full name
+        email: createAddressDto.email,
+        password: await this.hashPassword(staticPassword),
+        confirmPassword: staticPassword, // Set confirmPassword for validation (you can choose to ignore this in the DTO if not needed)
+      };
+  
+      user = this.userRepository.create(newUserDto);
+      await this.userRepository.save(user);
     }
   
     // Check if an address already exists for this user
@@ -244,5 +256,33 @@ export class UserService {
     // Save the address entity to the database (this will save either the new or updated address)
     return await this.addressRepository.save(address);
   }
+
+  
+  // async createAddress(createAddressDto: CreateAddressDto, userId) {
+
+  //   // Find the user by ID to associate the address with
+  //   const user = await this.userRepository.findOne({ where: { id: userId } });
+  
+  //   if (!user) {
+  //     // throw new Error('User not found'); // Handle the case when the user does not exist
+  //   }
+  
+  //   // Check if an address already exists for this user
+  //   let address = await this.addressRepository.findOne({ where: { user } });
+  
+  //   if (address) {
+  //     // Update the existing address
+  //     Object.assign(address, createAddressDto); // Update fields from DTO
+  //   } else {
+  //     // Create a new address entity
+  //     address = this.addressRepository.create({
+  //       ...createAddressDto,
+  //       user, // Associate the user with the address
+  //     });
+  //   }
+  
+  //   // Save the address entity to the database (this will save either the new or updated address)
+  //   return await this.addressRepository.save(address);
+  // }
   
 }
