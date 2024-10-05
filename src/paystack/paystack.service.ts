@@ -11,7 +11,7 @@ async initializePayment(email: string, amount: number, currency: string, callbac
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
     callback_url: callback_url, // Correctly include the callback URL here
-    metadata: { message: message } // Include the message in metadata
+    // metadata: { message: message } // Include the message in metadata
   });
 
   const options = {
