@@ -198,19 +198,29 @@ async reset(@Body() body: { token: string }) {
     const totalUsers = await this.userService.countUsers();
     return { totalUsers };
   }
-  @Post('address')
-  async createAddress(@Body() createAddressDto : CreateAddressDto, 
-  @Res({ passthrough: true }) response: Response) {
-    const result = await this.userService.createAddress(createAddressDto);
-    // return createAddressDto
-    return response.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: ' address info',
-      data: result,
+  // @Post('address')
+  // async createAddress(@Body() createAddressDto : CreateAddressDto, 
+  // @Res({ passthrough: true }) response: Response) {
+  //   const result = await this.userService.createAddress(createAddressDto);
+  //   // return createAddressDto
+  //   return response.status(HttpStatus.OK).json({
+  //     statusCode: HttpStatus.OK,
+  //     message: ' address info',
+  //     data: result,
     
-    });
-  }
-  
+  //   });
+  // }
+  @Post('address')
+async createAddress(@Body() createAddressDto: CreateAddressDto, @Res({ passthrough: true }) response: Response) {
+  console.log('Received CreateAddressDto:', createAddressDto); // Log incoming data
+  const result = await this.userService.createAddress(createAddressDto);
+  return response.status(HttpStatus.OK).json({
+    statusCode: HttpStatus.OK,
+    message: 'Address info',
+    data: result,
+  });
+}
+
   @Get(':id/single_user')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
       return await this.userService.findOne(id);
