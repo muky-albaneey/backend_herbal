@@ -199,7 +199,7 @@ async reset(@Body() body: { token: string }) {
     return { totalUsers };
   }
   @Post('address')
-  async createAddress(@Body() createAddressDto, 
+  async createAddress(@Body() createAddressDto : CreateAddressDto, 
   @Res({ passthrough: true }) response: Response) {
     // const result = await this.userService.createAddress(createAddressDto);
     return createAddressDto
