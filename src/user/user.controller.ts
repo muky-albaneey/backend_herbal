@@ -211,7 +211,7 @@ async reset(@Body() body: { token: string }) {
   //   });
   // }
   @Post('address')
-async createAddress(@Body() createAddressDto: CreateAddressDto, @Res({ passthrough: true }) response: Response) {
+async createAddress(@Body() createAddressDto, @Res({ passthrough: true }) response: Response) {
   console.log('Received CreateAddressDto:', createAddressDto); // Log incoming data
   const result = await this.userService.createAddress(createAddressDto);
   return response.status(HttpStatus.OK).json({
