@@ -26,7 +26,7 @@ export class CreateAuthDto {
     @MinLength(6, { message: "The password should exceed 5 characters" })
     @MaxLength(14, { message: "The password should not exceed 14 characters" })     
     @IsString()  
-    password: string;
+    password?: string;
 
     @IsNotEmpty({ message: "The password field is empty" })
     @MinLength(6, { message: "The password should exceed 5 characters" })
@@ -58,7 +58,7 @@ export class LoginAuthDto {
     @MinLength(6, {message : "The password should exceed 5"})
     @MaxLength(14, {message : "The password should not exceed 14"})     
     @IsString()  
-    password : string
+    password: string
 }
 
 

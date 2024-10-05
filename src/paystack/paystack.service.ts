@@ -5,12 +5,13 @@ import * as https from 'https';
 export class PaystackService {
   private readonly secretKey = 'sk_test_c1e0adc5d2721ff5ed3a8c1a7dcd3f6c6f8a9902'; // Replace with your Paystack secret key
 
-async initializePayment(email: string, amount: number, currency: string, callback_url: string): Promise<any> {
+async initializePayment(email: string, amount: number, currency: string, callback_url: string, message: string): Promise<any> {
   const params = JSON.stringify({
     email: email,
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
-    callback_url: callback_url // Correctly include the callback URL here
+    callback_url: callback_url, // Correctly include the callback URL here
+    metadata: { message: message } // Include the message in metadata
   });
 
   const options = {
