@@ -211,14 +211,16 @@ async reset(@Body() body: { token: string }) {
   //   });
   // }
   @Post('address')
-async createAddress(@Body() createAddressDto, @Res({ passthrough: true }) response: Response) {
+async createAddress(@Body() createAddressDto: CreateAddressDto) {
   console.log('Received CreateAddressDto:', createAddressDto); // Log incoming data
   const result = await this.userService.createAddress(createAddressDto);
-  return response.status(HttpStatus.OK).json({
-    statusCode: HttpStatus.OK,
-    message: 'Address info',
-    data: result,
-  });
+  // return response.status(HttpStatus.OK).json({
+  //   statusCode: HttpStatus.OK,
+  //   message: 'Address info',
+  //   data: result,
+  // });
+
+  return result;
 }
 
   @Get(':id/single_user')
