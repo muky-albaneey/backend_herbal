@@ -5,7 +5,7 @@ import * as https from 'https';
 export class PaystackService {
   private readonly secretKey = 'sk_test_c1e0adc5d2721ff5ed3a8c1a7dcd3f6c6f8a9902'; // Replace with your Paystack secret key
 
-async initializePayment(email: string, amount: number, currency: string, callback_url: string, message: string): Promise<any> {
+async initializePayment(email: string, amount: number, currency: string, callback_url: string, ): Promise<any> {
   const params = JSON.stringify({
     email: email,
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
