@@ -157,25 +157,6 @@ export class UserService {
     return userValidate;
   }
 
-  // async findOne(id) {
-  //   const user = await this.userRepository.findOne({
-  //     where: { id },
-  //     relations: [
-  //       'profile_image',
-  //       'products',
-  //       'orders',
-  //       'address',
-  //     ],
-  //   });
-  
-  //   console.log("User found: ", user);
-  
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-  
-  //   return user;
-  // }
   async findOne(id) {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -216,73 +197,6 @@ export class UserService {
     // Save the updated user entity
     return await this.userRepository.save(user);
   }
-
-  // async uploadFileToLinode(file: Express.Multer.File): Promise<string> {
-  //   const params = {
-  //     Bucket: this.bucketName,
-  //     Key: `${Date.now()}-${file.originalname}`,
-  //     Body: file.buffer,
-  //     ContentType: file.mimetype,
-  //     ACL: 'public-read',
-  //   };
-
-  //   try {
-  //     const uploadResult = await this.s3.upload(params).promise();
-  //     return uploadResult.Location;
-  //   } catch (error) {
-  //     throw new BadRequestException('Error uploading file to Linode Object Storage');
-  //   }
-  // }
-
-  // Patch request to update user's profile image
-  // async patchUserProfileImage(
-  //   userId,
-  //   file: Express.Multer.File,
-  // ): Promise<User> {
-  //   // Find the user by ID
-  //   const user = await this.userRepository.findOne({ where: { id: userId }, relations: { profile_image: true } });
-  //   if (!user) {
-  //     throw new NotFoundException(`User with ID ${userId} not found`);
-  //   }
-
-  //   // Upload new file if provided
-  //   let newProfileImage: ProfileImage;
-  //   if (file) {
-  //     const fileUrl = await this.uploadFileToLinode(file);
-  //     newProfileImage = this.profileImageRepository.create({
-  //       name: file.originalname,
-  //       url: fileUrl,
-  //       ext: path.extname(file.originalname).slice(1),
-  //     });
-
-  //     // Save the new profile image
-  //     newProfileImage = await this.profileImageRepository.save(newProfileImage);
-  //   }
- 
-  //   // If user already has an image, delete the old one from S3 and database
-  //   if (user.profile_image) {
-  //     try {
-  //       const deleteParams = {
-  //         Bucket: this.bucketName,
-  //         Key: path.basename(user.profile_image.url),
-  //       };
-  //       await this.s3.deleteObject(deleteParams).promise();
-  //     } catch (error) {
-  //       console.error(`Error deleting old image from Linode: ${error.message}`);
-  //     }
-
-  //     // Delete old profile image from the database
-  //     await this.profileImageRepository.delete(user.profile_image.id);
-  //   }
-
-  //   // Assign new profile image to user
-  //   if (newProfileImage) {
-  //     user.profile_image = newProfileImage;
-  //   }
-
-  //   // Save and return updated user
-  //   return await this.userRepository.save(user);
-  // }
 
   async countUsers(): Promise<number> {
     return await this.userRepository.count();

@@ -93,13 +93,24 @@ export class ProductService {
     }
   }
 
+  // async findProductById(id): Promise<Product> {
+  //   const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true}  });
+  //   if (!product) {
+  //     throw new NotFoundException(`Product with ID ${id} not found`);
+  //   }
+  //   return product;
+  // }
   async findProductById(id): Promise<Product> {
-    const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true}  });
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['product_image', 'user'],  // Include 'user' relation
+    });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
     return product;
   }
+  
 
     async countAllProducts(): Promise<number> {
       return await this.productRepository.count();
