@@ -233,6 +233,7 @@ export class UserService {
         email: createAddressDto.email,
         password: await this.hashPassword(staticPassword),
         confirmPassword: staticPassword, // Set confirmPassword for validation (you can choose to ignore this in the DTO if not needed)
+        // location : createAddressDto.city
       };
   
       user = this.userRepository.create(newUserDto);
@@ -254,7 +255,18 @@ export class UserService {
     }
   
     // Save the address entity to the database (this will save either the new or updated address)
-    return await this.addressRepository.save(address);
+    const savedAddress =  await this.addressRepository.save(address);
+
+    // Attach the user information to the saved address response
+  return {
+    ...savedAddress,
+    user: {
+      id: user.id,
+      full_name: user.full_name,
+      email: user.email,
+      role: user.role,
+    }
+  };
   }
 
   
