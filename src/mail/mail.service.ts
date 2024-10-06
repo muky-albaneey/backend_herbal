@@ -20,7 +20,7 @@ export class MailService {
 
     async dispatchEmail(to: string, subject: string, text: string, html?:string): Promise<void>{
         const mail = {
-            from : "nava@navatechx.com.ng",
+            from: '"NavatechX" <nava@navatechx.com.ng>',
             to,
             subject,
             text
