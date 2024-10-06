@@ -16,7 +16,7 @@ async initializePayment(
   @Body('amount') amount: number,
   @Body('currency') currency: string, // Add currency to the body
   @Body('callback_url') callback_url: string, // Accept callback_url in the request body
-  @Body() createOrderDto: CreateOrderDto
+  @Body() createOrderDto
 ) {
   try {
     // Call service with the currency included
