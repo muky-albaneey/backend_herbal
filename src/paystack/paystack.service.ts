@@ -118,20 +118,20 @@ export class PaystackService {
 
 
 // // Helper function to convert amount to the smallest unit based on the currency
-// private convertAmount(amount: number, currency: string): number {
-//   switch (currency.toUpperCase()) {
-//     case 'NGN': // Naira, amount should be in kobo (1 NGN = 100 kobo)
-//       return amount * 100;
-//     case 'USD': // Dollar, amount should be in cents (1 USD = 100 cents)
-//       return amount * 100;
-//     case 'GHS': // Ghanaian cedi, amount should be in pesewas (1 GHS = 100 pesewas)
-//       return amount * 100;
-//     case 'KES': // Kenyan shilling, amount should be in cents (1 KES = 100 cents)
-//       return amount * 100;
-//     default:
-//       throw new HttpException(`Unsupported currency: ${currency}`, HttpStatus.BAD_REQUEST);
-//   }
-// }
+private convertAmount(amount: number, currency: string): number {
+  switch (currency.toUpperCase()) {
+    case 'NGN': // Naira, amount should be in kobo (1 NGN = 100 kobo)
+      return amount * 100;
+    case 'USD': // Dollar, amount should be in cents (1 USD = 100 cents)
+      return amount * 100;
+    case 'GHS': // Ghanaian cedi, amount should be in pesewas (1 GHS = 100 pesewas)
+      return amount * 100;
+    case 'KES': // Kenyan shilling, amount should be in cents (1 KES = 100 cents)
+      return amount * 100;
+    default:
+      throw new HttpException(`Unsupported currency: ${currency}`, HttpStatus.BAD_REQUEST);
+  }
+}
 async initializePayment(
   email: string,
   amount: number,
