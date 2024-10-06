@@ -6,115 +6,6 @@ import { CreateOrderDto } from 'src/order/dto/create-order.dto';
 export class PaystackService {
   private readonly secretKey = 'sk_test_c1e0adc5d2721ff5ed3a8c1a7dcd3f6c6f8a9902'; // Replace with your Paystack secret key
 
-// async initializePayment(email: string, amount: number, currency: string, callback_url: string, createOrderDto:CreateOrderDto): Promise<any> {
-//   const message= ''
-//   const params = JSON.stringify({
-//     email: email,
-//     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
-//     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
-//     callback_url: callback_url, // Correctly include the callback URL here
-//     metadata: { message: message , products: createOrderDto } // Include the message in metadata
-//   });
-
-//   const options = {
-//     hostname: 'api.paystack.co',
-//     port: 443,
-//     path: '/transaction/initialize',
-//     method: 'POST',
-//     headers: {
-//       Authorization: `Bearer ${this.secretKey}`,
-//       'Content-Type': 'application/json',
-//     },
-//   };
-
-//   return new Promise((resolve, reject) => {
-//     const req = https.request(options, (res) => {
-//       let data = '';
-
-//       res.on('data', (chunk) => {
-//         data += chunk;
-//       });
-
-//       res.on('end', () => {
-//         const response = JSON.parse(data);
-//         if (res.statusCode === 200) {
-//           // Ensure that the response contains the authorization_url
-//           resolve(response.data);
-//         } else {
-//           reject(new HttpException(response, res.statusCode));
-//         }
-//       });
-//     });
-
-//     req.on('error', (error) => {
-//       reject(new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR));
-//     });
-
-//     req.write(params);
-//     req.end();
-//   });
-// }
-// async initializePayment(
-//   email: string,
-//   amount: number,
-//   currency: string,
-//   callback_url: string,
-//   createOrderDto: CreateOrderDto,
-// ): Promise<any> {
-//   const metadata = {
-//     message: 'Purchase details',
-//     products: createOrderDto.items.map((product) => ({
-//       name: product.name,
-//       quantity: product.quantity,
-//       price: product.price,
-//     })),
-//   };
-
-//   const params = JSON.stringify({
-//     email: email,
-//     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
-//     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
-//     callback_url: callback_url, // Correctly include the callback URL here
-//     metadata: metadata, // Include the metadata with cart details
-//   });
-
-//   const options = {
-//     hostname: 'api.paystack.co',
-//     port: 443,
-//     path: '/transaction/initialize',
-//     method: 'POST',
-//     headers: {
-//       Authorization: `Bearer ${this.secretKey}`,
-//       'Content-Type': 'application/json',
-//     },
-//   };
-
-//   return new Promise((resolve, reject) => {
-//     const req = https.request(options, (res) => {
-//       let data = '';
-
-//       res.on('data', (chunk) => {
-//         data += chunk;
-//       });
-
-//       res.on('end', () => {
-//         const response = JSON.parse(data);
-//         if (res.statusCode === 200) {
-//           resolve(response.data); // Ensure that the response contains the authorization_url
-//         } else {
-//           reject(new HttpException(response, res.statusCode));
-//         }
-//       });
-//     });
-
-//     req.on('error', (error) => {
-//       reject(new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR));
-//     });
-
-//     req.write(params);
-//     req.end();
-//   });
-// }
 
 
 // // Helper function to convert amount to the smallest unit based on the currency
@@ -139,7 +30,7 @@ async initializePayment(
   callback_url: string,
   createOrderDto: CreateOrderDto,
 ): Promise<any> {
-  // Build the metadata with custom fields
+  // Build the metadata with custom fields for product details
   const metadata = {
     message: 'Purchase details',
     products: createOrderDto.items.map((product) => ({
@@ -163,7 +54,7 @@ async initializePayment(
 
   // Build the parameters for the Paystack request
   const params = JSON.stringify({
-    email: email,
+    email: email, // The payer's email
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
     callback_url: callback_url, // Correctly include the callback URL here
@@ -207,6 +98,82 @@ async initializePayment(
     req.end();
   });
 }
+
+// async initializePayment(
+//   email: string,
+//   amount: number,
+//   currency: string,
+//   callback_url: string,
+//   createOrderDto: CreateOrderDto,
+// ): Promise<any> {
+//   // Build the metadata with custom fields
+//   const metadata = {
+//     message: 'Purchase details',
+//     products: createOrderDto.items.map((product) => ({
+//       name: product.name,
+//       quantity: product.quantity,
+//       price: product.price,
+//     })),
+//     custom_fields: [
+//       {
+//         display_name: "Product",
+//         variable_name: "product_name",
+//         value: createOrderDto.items.map((product) => product.name).join(", "),
+//       },
+//       {
+//         display_name: "Total Quantity",
+//         variable_name: "total_quantity",
+//         value: createOrderDto.items.reduce((sum, product) => sum + product.quantity, 0),
+//       },
+//     ],
+//   };
+
+//   // Build the parameters for the Paystack request
+//   const params = JSON.stringify({
+//     email: email,
+//     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
+//     currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
+//     callback_url: callback_url, // Correctly include the callback URL here
+//     metadata: metadata, // Attach metadata, including custom fields
+//   });
+
+//   const options = {
+//     hostname: 'api.paystack.co',
+//     port: 443,
+//     path: '/transaction/initialize',
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${this.secretKey}`,
+//       'Content-Type': 'application/json',
+//     },
+//   };
+
+//   return new Promise((resolve, reject) => {
+//     const req = https.request(options, (res) => {
+//       let data = '';
+
+//       res.on('data', (chunk) => {
+//         data += chunk;
+//       });
+
+//       res.on('end', () => {
+//         const response = JSON.parse(data);
+//         if (res.statusCode === 200) {
+//           resolve(response.data); // Ensure that the response contains the authorization_url
+//         } else {
+//           reject(new HttpException(response, res.statusCode));
+//         }
+//       });
+//     });
+
+//     req.on('error', (error) => {
+//       reject(new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR));
+//     });
+
+//     req.write(params);
+//     req.end();
+//   });
+// }
 
   // Verify payment (Optional)
   async verifyPayment(reference: string): Promise<any> {
