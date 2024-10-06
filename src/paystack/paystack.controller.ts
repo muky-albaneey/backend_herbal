@@ -2,6 +2,7 @@ import { Controller, Post, Body, Req, Res, Headers, Get, Query } from '@nestjs/c
 import { PaystackService } from './paystack.service';
 import { Request, Response } from 'express';
 import * as crypto from 'crypto';
+import { CreateOrderDto } from 'src/order/dto/create-order.dto';
 
 @Controller('paystack')
 export class PaystackController {
@@ -14,11 +15,12 @@ async initializePayment(
   @Body('email') email: string,
   @Body('amount') amount: number,
   @Body('currency') currency: string, // Add currency to the body
-  @Body('callback_url') callback_url: string // Accept callback_url in the request body
+  @Body('callback_url') callback_url: string, // Accept callback_url in the request body
+  @Body() createOrderDto: CreateOrderDto
 ) {
   try {
     // Call service with the currency included
-    const response = await this.paystackService.initializePayment(email, amount, currency, callback_url);
+    const response = await this.paystackService.initializePayment(email, amount, currency, callback_url,createOrderDto);
     return { status: 'success', data: response };
   } catch (error) {
     return { status: 'error', message: error.message };
