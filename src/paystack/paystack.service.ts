@@ -31,6 +31,35 @@ async initializePayment(
   createOrderDto: CreateOrderDto,
 ): Promise<any> {
   // Build the metadata with custom fields for product details
+  // const metadata = {
+  //   message: 'Purchase details',
+  //   products: createOrderDto.items.map((product) => ({
+  //     name: product.name,
+  //     quantity: product.quantity,
+  //     price: product.price,
+  //   })),
+  //   custom_fields: [
+  //     {
+  //       display_name: "Product",
+  //       variable_name: "product_name",
+  //       value: createOrderDto.items.map((product) => product.name).join(", "),
+  //     },
+  //     {
+  //       display_name: "Total Quantity",
+  //       variable_name: "total_quantity",
+  //       value: createOrderDto.items.reduce((sum, product) => sum + product.quantity, 0),
+  //     },
+  //   ],
+  // };
+
+  // // Build the parameters for the Paystack request
+  // const params = JSON.stringify({
+  //   email: email, // The payer's email
+  //   amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
+  //   currency: currency.toUpperCase(), // Ensure currency is uppercase (e.g., USD, GHS)
+  //   callback_url: callback_url, // Correctly include the callback URL here
+  //   metadata: metadata, // Attach metadata, including custom fields
+  // });
   const metadata = {
     message: 'Purchase details',
     products: createOrderDto.items.map((product) => ({
@@ -51,8 +80,7 @@ async initializePayment(
       },
     ],
   };
-
-  // Build the parameters for the Paystack request
+  
   const params = JSON.stringify({
     email: email, // The payer's email
     amount: this.convertAmount(amount, currency), // Convert amount to the smallest unit
@@ -60,7 +88,7 @@ async initializePayment(
     callback_url: callback_url, // Correctly include the callback URL here
     metadata: metadata, // Attach metadata, including custom fields
   });
-
+  
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
