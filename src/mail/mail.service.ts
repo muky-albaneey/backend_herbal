@@ -8,11 +8,11 @@ export class MailService {
     constructor(){
 
         this.transporter = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+            host: "live.smtp.mailtrap.io",
+            port: 587,
             auth: {
-              user: "c848dd42d3c9f4",
-              pass: "fe45f8091abbc5"
+              user: "smtp@mailtrap.io",
+              pass: "1599b03592cc08a1bd2e24a53f3c9ea2"
             }
           });
 
@@ -20,7 +20,7 @@ export class MailService {
 
     async dispatchEmail(to: string, subject: string, text: string, html?:string): Promise<void>{
         const mail = {
-            from : "mukyalbani1@ggmail.com",
+            from : "nava@navatechx.com.ng",
             to,
             subject,
             text
