@@ -225,7 +225,20 @@ async createAddress(@Body() createAddressDto: CreateAddressDto,  @Res() response
 
   @Get(':id/single_user')
   async findOne(@Param('id', ParseUUIDPipe) id: string,  @Res() response: Response) {
-      return await this.userService.findOne(id);
+      //  const result = await this.userService.findOne(id);
+      try {
+        const result = await this.userService.findOne(id);
+        return response.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          message: 'User  successfully fetched',
+          data: result,
+        });
+      } catch (error) {
+        return response.status(HttpStatus.BAD_REQUEST).json({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: error.message,
+        });
+      }
     }
     
     @Patch('update/:id')
