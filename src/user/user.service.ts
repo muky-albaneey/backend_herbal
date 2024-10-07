@@ -156,7 +156,7 @@ export class UserService {
     // console.log('Password changed and token cleared for user:', userValidate);
     return userValidate;
   }
-  async findOne(id: string) {
+  async findOne(id) {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
