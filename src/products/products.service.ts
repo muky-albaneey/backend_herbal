@@ -66,7 +66,7 @@ export class ProductService {
       url: fileUrl, // Store the file URL in the database
       ext: path.extname(file.originalname).slice(1),
     });
-
+    
     const savedProductImage = await this.productImageRepository.save(productImage);
 
     // Create the product with the saved image and associated user
