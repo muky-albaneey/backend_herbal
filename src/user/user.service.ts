@@ -156,19 +156,13 @@ export class UserService {
     // console.log('Password changed and token cleared for user:', userValidate);
     return userValidate;
   }
-
-  async findOne(id) {
+  async findOne(id: string) {
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.profile_image', 'profile_image')
-      .leftJoinAndSelect('user.products', 'products')
-      .leftJoinAndSelect('user.orders', 'orders')
-      .leftJoinAndSelect('user.address', 'address')
-      .orderBy('orders.createdAt', 'DESC') // Order orders by created_at descending
       .where('user.id = :id', { id })
       .getOne();
   
-    console.log('User found: ', user);
+    console.log('User found:', user);
   
     if (!user) {
       throw new NotFoundException('User not found');
@@ -176,6 +170,26 @@ export class UserService {
   
     return user;
   }
+  
+  // async findOne(id) {
+  //   const user = await this.userRepository
+  //     .createQueryBuilder('user')
+  //     .leftJoinAndSelect('user.profile_image', 'profile_image')
+  //     .leftJoinAndSelect('user.products', 'products')
+  //     .leftJoinAndSelect('user.orders', 'orders')
+  //     .leftJoinAndSelect('user.address', 'address')
+  //     .orderBy('orders.createdAt', 'DESC') // Order orders by created_at descending
+  //     .where('user.id = :id', { id })
+  //     .getOne();
+  
+  //   console.log('User found: ', user);
+  
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  
+  //   return user;
+  // }
   
   
   async findAll() {
