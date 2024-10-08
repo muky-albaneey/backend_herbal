@@ -21,7 +21,7 @@ export class Product {
     @Column({ type: 'varchar', length: 190, nullable: false })
     category: string;
 
-    @Column({ type: 'varchar', length: 190, nullable: false })
+    @Column({ type: 'varchar', length: 2000, nullable: false })
     description: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
