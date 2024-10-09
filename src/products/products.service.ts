@@ -85,6 +85,15 @@ export class ProductService {
     return product
   }
 
+  async findAllProductsDes() {
+    const product = await this.productRepository.find({
+      relations: { product_image: true },
+      order: { id: 'DESC' }, // Order by descending id to get the latest product
+      take: 1,               // Limit to 1 to fetch the last product
+    });
+    return product; // Return the single product
+  }
+  
   async deleteProduct(id): Promise<void> {
     const result = await this.productRepository.delete(id);
 
@@ -93,13 +102,6 @@ export class ProductService {
     }
   }
 
-  // async findProductById(id): Promise<Product> {
-  //   const product = await this.productRepository.findOne({ where: { id }, relations: { product_image: true}  });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with ID ${id} not found`);
-  //   }
-  //   return product;
-  // }
   async findProductById(id): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id },

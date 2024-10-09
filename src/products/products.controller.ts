@@ -67,6 +67,11 @@ export class ProductController {
     return await this.productService.findAllProducts();
   }
 
+  @Get('all/desc')
+  async findAllDesc() {
+    return await this.productService.findAllProductsDes();
+  }
+
      // Access Key
     // ZN4YYP732QAAGQVLAWSD
 
